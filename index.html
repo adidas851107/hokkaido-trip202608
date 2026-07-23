@@ -170,7 +170,7 @@
         <!--  育兒提醒卡片 -->
         <div class="bg-[#B68D97]/15 text-stone-800 text-xs p-3 rounded-2xl border border-[#B68D97]/30 flex items-start gap-2 shadow-2xs">
           <i class="fa-solid fa-baby text-[#B68D97] mt-0.5 text-sm shrink-0"></i>
-          <div><span class="font-bold text-stone-900">給寶寶的 貼心提醒：</span>{{ currentDay.babyTip }}</div>
+          <div><span class="font-bold text-stone-900">給寶寶的貼心提醒：</span>{{ currentDay.babyTip }}</div>
         </div>
 
         <!-- 每日出發地點提示卡片 -->
@@ -484,8 +484,8 @@
         items: [
           { id: '1-1', category: '航班', title: '抵達新千歲機場 IT234', time: '11:05', ticket: '', notes: '領行李、換尿布、餵奶；不急著衝櫃檯。', navQuery: 'New Chitose Airport', transportType: 'car', travelTime: '45 分鐘' },
           { id: '1-2', category: '其他', title: '領車與安裝安全座椅', time: '12:30-13:15', ticket: '', notes: '確認安全帶固定、導航語言與 ETC 卡。', navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '1 小時' },
-          { id: '1-3', category: '購物', title: '狸小路商店街', time: '約 14:30', hours: '各大商店營業中', ticket: '免費', notes: '停車後慢慢逛；先簡單用餐，買當晚與 Jessie 必需品。', navQuery: '狸小路商店街', transportType: 'car', travelTime: '15 分鐘' },
-          { id: '1-4', category: '住宿', title: '辦理入住 La manana', time: '約 17:00', ticket: '', notes: `入住地點：${HOTEL_ADDRESS}。Jessie 洗澡餵奶，第一天不加景點。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '' }
+          { id: '1-3', category: '購物', title: '狸小路商店街', time: '約 14:30', hours: '各大商店營業中', ticket: '免費', notes: '停車後慢慢逛；先簡單用餐，買當晚與寶寶必需品。', navQuery: '狸小路商店街', transportType: 'car', travelTime: '15 分鐘' },
+          { id: '1-4', category: '住宿', title: '辦理入住 La manana', time: '約 17:00', ticket: '', notes: `入住地點：${HOTEL_ADDRESS}。洗澡餵奶，第一天不加景點。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '' }
         ]
       },
       {
@@ -494,7 +494,7 @@
         weather: { region: '札幌市區', condition: '24-29℃ 溫和快適', temp: '24-29°C', advice: '大通公園樹陰處活動', icon: 'fa-solid fa-cloud-sun text-amber-500' },
         babyTip: '下午刻意留在住宿處休息，確保寶寶午睡。電視塔建議 19:00 登塔，勿拖過晚。',
         items: [
-          { id: '2-1', category: '景點', title: '大通公園散步 (由住宿出發)', time: '09:00', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 12 分鐘。散步讓 Jessie 在陰影處活動。`, navQuery: '大通公園', transportType: 'car', travelTime: '12 分鐘' },
+          { id: '2-1', category: '景點', title: '大通公園散步 (由住宿出發)', time: '09:00', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 12 分鐘。散步讓寶寶在陰影處活動。`, navQuery: '大通公園', transportType: 'car', travelTime: '12 分鐘' },
           { id: '2-2', category: '美食', title: '蝦味拉麵一幻 總本店', time: '11:00 前後', hours: '11:00 起', ticket: '約 ¥1,000', notes: '招牌蝦味噌/蝦鹽，座位較狹窄，建議大人先確認座位。', navQuery: '蝦味拉麵一幻 總本店', transportType: 'car', travelTime: '15 分鐘' },
           { id: '2-3', category: '其他', title: '回住宿休息 / 自由活動', time: '13:00-17:30', ticket: '', notes: `返回住宿點 (${HOTEL_ADDRESS})，完整保留寶寶午睡、餵奶與大人休息時間。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '12 分鐘' },
           { id: '2-4', category: '景點', title: '大通公園晚間散步 & 電視塔夜景', time: '18:30-20:00', hours: '至 22:00', ticket: '¥1,000', notes: '看亮燈電視塔，登展望台看夜景。', navQuery: '札幌電視塔', transportType: 'walk', travelTime: '10 分鐘' }
@@ -529,7 +529,7 @@
         weekDay: 'Sun', dateNum: '16', fullDate: '2026/08/16', theme: '支笏湖放鬆日 + 晚間成吉思汗烤肉',
         startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
         weather: { region: '支笏湖', condition: '21-26℃ 湖邊風較涼', temp: '21-26°C', advice: '必備防風薄外套與寶寶薄毯', icon: 'fa-solid fa-cloud-sun text-slate-400' },
-        babyTip: '湖邊風強，若 Jessie 在睡覺留在岸邊最舒服，不必強求搭船。',
+        babyTip: '湖邊風強，若寶寶在睡覺留在岸邊最舒服，不必強求搭船。',
         items: [
           { id: '5-1', category: '景點', title: '支笏湖遊客中心 (由住宿出發)', time: '08:30 出發', hours: '09:00-17:30', ticket: '停車費約 ¥1,000', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，約 1 小時 15 分鐘車程。湖岸與溫泉街徒步。`, navQuery: '支笏湖遊客中心', transportType: 'car', travelTime: '1 小時 15 分' },
           { id: '5-2', category: '美食', title: '食事処 支笏莊 / 湖畔餐廳', time: '11:30-12:30', ticket: '約 ¥1,800', notes: '品嚐姬鱒定食或簡單日式餐點。', navQuery: '食事処 支笏莊', transportType: 'walk', travelTime: '5 分鐘' },
@@ -565,7 +565,7 @@
 
     const defaultShoppingList = [
       { id: '1', name: 'LeTAO 雙層起司蛋糕', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?q=80&w=300' },
-      { id: '2', name: '阿卡將 Jessie 寶寶用品', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=300' },
+      { id: '2', name: '阿卡將 寶寶用品', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=300' },
       { id: '3', name: '六花亭 奶油葡萄餅乾', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=300' }
     ];
 

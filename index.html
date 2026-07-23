@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>2026 北海道花海親子自駕手冊 • 5M Jessie 友善版</title>
+  <title>2026 北海道莫蘭迪花海親子自駕手冊 • 5M Jessie 友善版</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -23,13 +23,17 @@
       theme: {
         extend: {
           colors: {
-            flower: {
-              lavender: '#8B5CF6',  /* 薰衣草紫 */
-              darkLavender: '#6D28D9',
-              sunflower: '#F59E0B', /* 向日葵黃 */
-              pink: '#EC4899',      /* 花海粉 */
-              bg: '#FAF5FF',        /* 花田晨霧輕微紫底色 */
-              cardBg: '#FFFFFF',
+            morandi: {
+              bg: '#F5F3F0',          /* 莫蘭迪暖灰米底 */
+              cardBg: '#FFFFFF',      /* 純白卡片 */
+              lavender: '#8D7B93',    /* 莫蘭迪霧紫 */
+              lavenderDark: '#6E5D74',
+              sage: '#8A9A86',        /* 莫蘭迪鼠尾草綠 */
+              dustyRose: '#B68D97',   /* 莫蘭迪煙燻粉 */
+              slate: '#6B7A8D',       /* 莫蘭迪藍灰 */
+              amber: '#C29B72',       /* 莫蘭迪暖琥珀 */
+              text: '#3D3A39',        /* 溫和深灰文字 */
+              muted: '#8C8885'        /* 柔和次要文字 */
             }
           },
           fontFamily: {
@@ -42,109 +46,105 @@
 
   <style>
     body {
-      background-color: #FAF5FF;
+      background-color: #F5F3F0;
       -webkit-tap-highlight-color: transparent;
       font-family: 'M PLUS Rounded 1c', 'Noto Sans TC', sans-serif;
+      color: #3D3A39;
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .flower-gradient-text {
-      background: linear-gradient(135deg, #7C3AED 0%, #EC4899 50%, #F59E0B 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
   </style>
 </head>
-<body class="text-slate-700 min-h-screen flex justify-center items-start">
+<body class="min-h-screen flex justify-center items-start">
 
-  <div id="app" class="w-full max-w-md min-h-screen bg-[#FAF5FF] relative pb-24 shadow-2xl overflow-hidden">
+  <div id="app" class="w-full max-w-md min-h-screen bg-[#F5F3F0] relative pb-24 shadow-xl overflow-hidden">
 
-    <!-- 1. 花海主題頁首 Banner 區塊 -->
-    <header class="relative w-full h-[250px] overflow-hidden bg-gradient-to-br from-purple-300 via-pink-200 to-amber-100">
+    <!-- 1. 莫蘭迪質感頁首 Banner 區塊 -->
+    <header class="relative w-full h-[230px] overflow-hidden bg-stone-300">
       <!-- 滿版花海橫幅圖片 -->
-      <img src="banner.png" alt="Hokkaido Flower Field Banner" class="w-full h-full object-cover object-center brightness-95" onerror="this.src='https://images.unsplash.com/photo-1590483736622-39da86788790?q=80&w=1920&auto=format&fit=crop'" />
+      <img src="banner.png" alt="Hokkaido Flower Field Banner" class="w-full h-full object-cover object-center saturate-[0.85] contrast-[0.95]" onerror="this.src='https://images.unsplash.com/photo-1590483736622-39da86788790?q=80&w=1920&auto=format&fit=crop'" />
       
-      <!-- 花海質感遮罩 -->
-      <div class="absolute inset-0 bg-gradient-to-t from-[#FAF5FF] via-transparent to-black/20"></div>
+      <!-- 莫蘭迪柔霧遮罩 -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#F5F3F0] via-black/10 to-black/30"></div>
 
       <!-- 標題文字 overlays -->
-      <div class="absolute top-4 left-4 text-white drop-shadow-md z-10">
-        <span class="bg-white/30 backdrop-blur-md text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full border border-white/40">
-          🪻 北海道富良野花海季 • 自駕遊
+      <div class="absolute top-4 left-4 text-white drop-shadow-xs z-10">
+        <span class="bg-white/25 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/30">
+          🪻 北海道莫蘭迪花海季 • 自駕手冊
         </span>
-        <h1 class="text-xl font-extrabold mt-1 tracking-tight">北海道親子 7 天 6 夜慢遊</h1>
+        <h1 class="text-lg font-extrabold mt-1 tracking-tight">北海道親子 7 天 6 夜慢遊</h1>
       </div>
 
       <!-- 浮動分頁導覽按鈕 -->
-      <nav class="absolute bottom-6 right-3 flex items-center bg-white/90 backdrop-blur-md rounded-full p-1.5 shadow-lg border border-purple-100/80 z-20">
+      <nav class="absolute bottom-5 right-3 flex items-center bg-white/90 backdrop-blur-md rounded-full p-1.5 shadow-sm border border-stone-200/80 z-20">
         <button 
           @click="activeTab = 'itinerary'" 
-          :class="['px-3 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5', activeTab === 'itinerary' ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md' : 'text-slate-600 hover:text-purple-600']"
+          :class="['px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5', activeTab === 'itinerary' ? 'bg-[#8D7B93] text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900']"
         >
-          <i class="fa-solid fa-seedling text-sm"></i>
+          <i class="fa-solid fa-calendar-day text-xs"></i>
           <span v-if="activeTab === 'itinerary'">行程</span>
         </button>
 
         <button 
           @click="activeTab = 'info'" 
-          :class="['px-3 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5', activeTab === 'info' ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md' : 'text-slate-600 hover:text-purple-600']"
+          :class="['px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5', activeTab === 'info' ? 'bg-[#8D7B93] text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900']"
         >
-          <i class="fa-solid fa-circle-info text-sm"></i>
+          <i class="fa-solid fa-circle-info text-xs"></i>
           <span v-if="activeTab === 'info'">資訊</span>
         </button>
 
         <button 
           @click="activeTab = 'shopping'" 
-          :class="['px-3 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5', activeTab === 'shopping' ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md' : 'text-slate-600 hover:text-purple-600']"
+          :class="['px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5', activeTab === 'shopping' ? 'bg-[#8D7B93] text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900']"
         >
-          <i class="fa-solid fa-basket-shopping text-sm"></i>
+          <i class="fa-solid fa-basket-shopping text-xs"></i>
           <span v-if="activeTab === 'shopping'">清單</span>
         </button>
 
         <button 
           @click="activeTab = 'expenses'" 
-          :class="['px-3 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5', activeTab === 'expenses' ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md' : 'text-slate-600 hover:text-purple-600']"
+          :class="['px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5', activeTab === 'expenses' ? 'bg-[#8D7B93] text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900']"
         >
-          <i class="fa-solid fa-wallet text-sm"></i>
+          <i class="fa-solid fa-wallet text-xs"></i>
           <span v-if="activeTab === 'expenses'">花費</span>
         </button>
       </nav>
     </header>
 
-    <!-- 主內容區域：花海風格 rounded-t 銜接 -->
-    <main class="-mt-5 relative z-10 bg-[#FAF5FF] rounded-t-[28px] pt-4 px-4 min-h-[calc(100vh-230px)]">
+    <!-- 主內容區域 -->
+    <main class="-mt-4 relative z-10 bg-[#F5F3F0] rounded-t-[24px] pt-4 px-4 min-h-[calc(100vh-210px)]">
 
       <!-- ========================================== -->
       <!-- 分頁一：每日行程表 -->
       <!-- ========================================== -->
-      <section v-if="activeTab === 'itinerary'" class="space-y-4">
+      <section v-if="activeTab === 'itinerary'" class="space-y-3.5">
         
-        <!-- 橫向滑動日期選單 (薰衣草漸層風格) -->
-        <div class="flex gap-2.5 overflow-x-auto no-scrollbar py-1 px-1">
+        <!-- 橫向滑動日期選單 -->
+        <div class="flex gap-2 overflow-x-auto no-scrollbar py-1 px-0.5">
           <button 
             v-for="(day, index) in days" 
             :key="index"
             @click="currentDayIndex = index"
             :class="[
-              'flex flex-col items-center justify-center min-w-[54px] py-2 px-1 rounded-2xl transition-all shadow-xs shrink-0 border',
+              'flex flex-col items-center justify-center min-w-[52px] py-2 px-1 rounded-2xl transition-all shrink-0 border',
               currentDayIndex === index 
-                ? 'bg-gradient-to-b from-purple-600 to-violet-700 text-white border-purple-500 shadow-purple-200 scale-105 font-bold' 
-                : 'bg-white text-slate-500 border-purple-100 hover:bg-purple-50'
+                ? 'bg-[#8D7B93] text-white border-[#8D7B93] shadow-xs font-bold scale-102' 
+                : 'bg-white text-stone-500 border-stone-200/60 hover:bg-stone-50'
             ]"
           >
-            <span class="text-xs tracking-wider uppercase font-bold opacity-90">{{ day.weekDay }}</span>
-            <span class="text-lg font-extrabold leading-tight mt-0.5">{{ day.dateNum }}</span>
+            <span class="text-[11px] tracking-wider uppercase font-bold opacity-80">{{ day.weekDay }}</span>
+            <span class="text-base font-extrabold leading-tight mt-0.5">{{ day.dateNum }}</span>
           </button>
         </div>
 
         <!-- 當日主題標題與分類篩選 -->
-        <div class="bg-white/90 backdrop-blur-xs p-3.5 rounded-2xl border border-purple-100/80 shadow-xs space-y-1.5">
+        <div class="bg-white/90 backdrop-blur-xs p-3.5 rounded-2xl border border-stone-200/70 shadow-2xs space-y-1.5">
           <div class="flex justify-between items-center">
-            <div class="text-xs font-extrabold text-purple-950 flex items-center gap-1.5">
-              <i class="fa-solid fa-spa text-flower-lavender"></i>
+            <div class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-spa text-[#8D7B93]"></i>
               <span>Day {{ currentDayIndex + 1 }} • {{ currentDay.fullDate }}</span>
             </div>
-            <select v-model="categoryFilter" class="text-xs bg-purple-50 text-purple-900 font-bold py-1 px-2.5 rounded-xl border-none outline-none">
+            <select v-model="categoryFilter" class="text-xs bg-stone-100 text-stone-700 font-bold py-1 px-2.5 rounded-xl border-none outline-none">
               <option value="all">全部分類</option>
               <option value="景點">景點</option>
               <option value="住宿">住宿</option>
@@ -154,40 +154,40 @@
               <option value="其他">其他</option>
             </select>
           </div>
-          <div class="text-xs font-extrabold text-slate-700 flex items-center gap-1">
-            <span class="text-flower-sunflower">🌻</span>
+          <div class="text-xs font-bold text-stone-600 flex items-center gap-1.5">
+            <span class="text-[#C29B72]">🌻</span>
             <span>主題：{{ currentDay.theme }}</span>
           </div>
         </div>
 
-        <!-- 每日天氣與穿搭卡片 (花田漸層) -->
-        <div class="bg-gradient-to-r from-amber-400 via-pink-400 to-purple-500 text-white rounded-2xl p-3.5 shadow-sm flex items-center justify-between">
+        <!-- 每日天氣與穿搭卡片 (莫蘭迪色調) -->
+        <div class="bg-[#8A9A86] text-white rounded-2xl p-3.5 shadow-2xs flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <i :class="['text-3xl drop-shadow-xs', currentDay.weather.icon]"></i>
+            <i :class="['text-2xl opacity-90', currentDay.weather.icon]"></i>
             <div>
-              <div class="text-[10px] font-extrabold opacity-90">{{ currentDay.weather.region }} • 盛夏花海天氣</div>
-              <div class="text-sm font-bold">{{ currentDay.weather.condition }}</div>
+              <div class="text-[10px] font-bold opacity-80">{{ currentDay.weather.region }} • 夏日預報</div>
+              <div class="text-xs font-bold">{{ currentDay.weather.condition }}</div>
             </div>
           </div>
           <div class="text-right">
-            <div class="text-lg font-black">{{ currentDay.weather.temp }}</div>
-            <div class="text-[10px] opacity-90">{{ currentDay.weather.advice }}</div>
+            <div class="text-base font-bold">{{ currentDay.weather.temp }}</div>
+            <div class="text-[10px] opacity-80">{{ currentDay.weather.advice }}</div>
           </div>
         </div>
 
         <!-- Jessie 育兒提醒卡片 -->
-        <div class="bg-purple-100/70 text-purple-950 text-xs p-3 rounded-2xl border border-purple-200/80 flex items-start gap-2 shadow-2xs">
-          <i class="fa-solid fa-baby text-flower-pink mt-0.5 text-sm"></i>
-          <div><span class="font-bold text-purple-900">Jessie 貼心提醒：</span>{{ currentDay.babyTip }}</div>
+        <div class="bg-[#B68D97]/15 text-stone-800 text-xs p-3 rounded-2xl border border-[#B68D97]/30 flex items-start gap-2 shadow-2xs">
+          <i class="fa-solid fa-baby text-[#B68D97] mt-0.5 text-sm shrink-0"></i>
+          <div><span class="font-bold text-stone-900">Jessie 貼心提醒：</span>{{ currentDay.babyTip }}</div>
         </div>
 
-        <!-- 每日出發地點提示卡片 (統一標示住宿點 15-chõme-3-18 Minami 9) -->
-        <div class="text-[11px] text-purple-900 bg-white/90 p-2.5 rounded-xl text-center border border-dashed border-purple-300 shadow-2xs flex items-center justify-center gap-1.5">
-          <i class="fa-solid fa-house-chimney-window text-flower-lavender"></i>
+        <!-- 每日出發地點提示卡片 -->
+        <div class="text-[11px] text-stone-600 bg-white/80 p-2.5 rounded-xl text-center border border-dashed border-stone-300 shadow-2xs flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-house-chimney-window text-[#8D7B93]"></i>
           <span><b>今日出發點：</b>{{ currentDay.startLocation }}</span>
         </div>
 
-        <!-- 行程列表 (支援 Sortable 拖曳排序) -->
+        <!-- 行程列表 -->
         <div id="itinerary-list" class="space-y-3">
           <div 
             v-for="(item, idx) in filteredItinerary" 
@@ -196,92 +196,98 @@
             class="relative group"
           >
             <!-- 行程間交通時間與運具 -->
-            <div v-if="idx > 0" class="flex items-center justify-center my-2 text-[11px] text-slate-400 gap-2">
-              <div class="h-[1px] bg-purple-200/60 flex-1"></div>
-              <span class="bg-white/90 px-3 py-0.5 rounded-full border border-purple-100 shadow-2xs flex items-center gap-1.5 font-bold text-purple-800">
+            <div v-if="idx > 0" class="flex items-center justify-center my-2 text-[11px] text-stone-400 gap-2">
+              <div class="h-[1px] bg-stone-200 flex-1"></div>
+              <span class="bg-white/90 px-3 py-0.5 rounded-full border border-stone-200 shadow-2xs flex items-center gap-1.5 font-bold text-stone-600">
                 <i :class="getTransportIcon(item.transportType)"></i>
                 約 {{ item.travelTime || '15-20 分鐘' }}
               </span>
-              <div class="h-[1px] bg-purple-200/60 flex-1"></div>
+              <div class="h-[1px] bg-stone-200 flex-1"></div>
             </div>
 
-            <!-- 第一天去程航班卡片造型 (IT234) -->
-            <div v-if="currentDayIndex === 0 && idx === 0 && item.category === '航班'" class="bg-gradient-to-br from-violet-600 via-purple-600 to-pink-500 text-white rounded-2xl p-4 shadow-md relative overflow-hidden">
+            <!-- 第一天去程航班卡片 (IT234) -->
+            <div v-if="currentDayIndex === 0 && idx === 0 && item.category === '航班'" class="bg-[#6B7A8D] text-white rounded-2xl p-4 shadow-2xs relative overflow-hidden">
               <div class="flex justify-between items-center border-b border-white/20 pb-2 mb-2">
-                <span class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">✈️ 去程航班 IT234</span>
+                <span class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">✈️ 去程航班 IT234</span>
                 <span class="text-xs font-mono">2026/08/12 (三)</span>
               </div>
               <div class="flex justify-between items-center text-center my-2">
                 <div>
-                  <div class="text-xl font-extrabold">TPE</div>
+                  <div class="text-xl font-bold">TPE</div>
                   <div class="text-[10px] opacity-80">台北桃園</div>
                 </div>
                 <div class="flex flex-col items-center">
-                  <i class="fa-solid fa-plane text-amber-200 text-base"></i>
+                  <i class="fa-solid fa-plane text-stone-200 text-sm"></i>
                   <span class="text-[10px] opacity-80 mt-0.5">約 4 hrs</span>
                 </div>
                 <div>
-                  <div class="text-xl font-extrabold">CTS</div>
+                  <div class="text-xl font-bold">CTS</div>
                   <div class="text-[10px] opacity-80">11:05 降落</div>
                 </div>
               </div>
               <div class="text-xs bg-white/10 p-2 rounded-xl mt-2 flex justify-between items-center">
                 <span>{{ item.notes }}</span>
-                <button @click="openGoogleNav('New Chitose Airport')" class="bg-white text-purple-800 px-2.5 py-1 rounded-lg font-bold text-[11px]">導航機場</button>
+                <button @click="openGoogleNav('New Chitose Airport')" class="bg-white text-stone-700 px-2.5 py-1 rounded-lg font-bold text-[11px]">導航機場</button>
               </div>
             </div>
 
-            <!-- 第 7 天回程航班卡片造型 (TR893) -->
-            <div v-else-if="currentDayIndex === 6 && item.category === '航班'" class="bg-gradient-to-br from-purple-700 via-violet-600 to-amber-500 text-white rounded-2xl p-4 shadow-md relative overflow-hidden">
+            <!-- 第 7 天回程航班卡片 (TR893) -->
+            <div v-else-if="currentDayIndex === 6 && item.category === '航班'" class="bg-[#6B7A8D] text-white rounded-2xl p-4 shadow-2xs relative overflow-hidden">
               <div class="flex justify-between items-center border-b border-white/20 pb-2 mb-2">
-                <span class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">✈️ 回程航班 TR893</span>
+                <span class="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">✈️ 回程航班 TR893</span>
                 <span class="text-xs font-mono">2026/08/18 (二)</span>
               </div>
               <div class="flex justify-between items-center text-center my-2">
                 <div>
-                  <div class="text-xl font-extrabold">CTS</div>
+                  <div class="text-xl font-bold">CTS</div>
                   <div class="text-[10px] opacity-80">19:10 起飛</div>
                 </div>
                 <div class="flex flex-col items-center">
-                  <i class="fa-solid fa-plane text-amber-200 text-base"></i>
-                  <span class="text-[10px] opacity-80 mt-0.5">預計 13:30 抵達機場區</span>
+                  <i class="fa-solid fa-plane text-stone-200 text-sm"></i>
+                  <span class="text-[10px] opacity-80 mt-0.5">預計 13:30 抵達機場</span>
                 </div>
                 <div>
-                  <div class="text-xl font-extrabold">TPE</div>
+                  <div class="text-xl font-bold">TPE</div>
                   <div class="text-[10px] opacity-80">台北桃園</div>
                 </div>
               </div>
               <div class="text-xs bg-white/10 p-2 rounded-xl mt-2 flex justify-between items-center">
                 <span>{{ item.notes }}</span>
-                <button @click="openGoogleNav('New Chitose Airport')" class="bg-white text-purple-800 px-2.5 py-1 rounded-lg font-bold text-[11px]">導航機場</button>
+                <button @click="openGoogleNav('New Chitose Airport')" class="bg-white text-stone-700 px-2.5 py-1 rounded-lg font-bold text-[11px]">導航機場</button>
               </div>
             </div>
 
-            <!-- 一般行程卡片 -->
-            <div v-else class="bg-white rounded-2xl p-3.5 shadow-xs border border-purple-100 hover:shadow-md transition-all flex flex-col justify-between">
-              <div class="flex items-start justify-between gap-2">
-                <div class="flex items-center gap-2">
-                  <span class="cursor-grab text-purple-300 hover:text-purple-600 drag-handle p-1"><i class="fa-solid fa-grip-vertical"></i></span>
-                  <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-md shadow-2xs', getCategoryBadge(item.category)]">
+            <!-- 一般行程卡片 (優化分類標籤單行顯示) -->
+            <div v-else class="bg-white rounded-2xl p-3.5 shadow-2xs border border-stone-200/80 hover:shadow-xs transition-all flex flex-col justify-between">
+              <div class="flex items-center justify-between gap-2">
+                <!-- 左側：拖曳圖示 + 橫向單行標籤 + 標題 -->
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                  <span class="cursor-grab text-stone-300 hover:text-stone-500 drag-handle p-1 shrink-0"><i class="fa-solid fa-grip-vertical"></i></span>
+                  
+                  <!-- 分類標籤：加入 whitespace-nowrap 與 shrink-0 確保絕對單行不變形 -->
+                  <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0 whitespace-nowrap', getCategoryBadge(item.category)]">
                     {{ item.category }}
                   </span>
-                  <h3 class="font-extrabold text-slate-800 text-sm">{{ item.title }}</h3>
+                  
+                  <h3 class="font-extrabold text-stone-800 text-sm truncate">{{ item.title }}</h3>
                 </div>
-                <div class="flex items-center gap-1">
-                  <button @click="editItinerary(item)" class="text-slate-300 hover:text-purple-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
-                  <button @click="openGoogleNav(item.navQuery || item.title)" class="bg-gradient-to-r from-purple-600 to-violet-600 text-white text-xs px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 shadow-xs hover:from-purple-700 hover:to-violet-700">
+
+                <!-- 右側：編輯與導航按鈕 -->
+                <div class="flex items-center gap-1 shrink-0">
+                  <button @click="editItinerary(item)" class="text-stone-400 hover:text-stone-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
+                  <button @click="openGoogleNav(item.navQuery || item.title)" class="bg-[#8D7B93] text-white text-xs px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 shadow-2xs hover:bg-[#6E5D74]">
                     <i class="fa-solid fa-location-arrow"></i> 導航
                   </button>
                 </div>
               </div>
 
               <!-- 卡片細節欄位 -->
-              <div class="mt-2.5 text-xs text-slate-500 space-y-1 pl-6">
-                <div v-if="item.time" class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-purple-400 w-3.5"></i> 預計時間：{{ item.time }}</div>
-                <div v-if="item.hours" class="flex items-center gap-1.5"><i class="fa-solid fa-store text-purple-400 w-3.5"></i> 營業時間：{{ item.hours }}</div>
-                <div v-if="item.ticket" class="flex items-center gap-1.5"><i class="fa-solid fa-ticket text-amber-500 w-3.5"></i> 門票/費用：{{ item.ticket }}</div>
-                <div v-if="item.notes" class="flex items-start gap-1.5 text-purple-950 bg-purple-50/70 p-2 rounded-xl mt-1.5 border border-purple-100/50">
-                  <i class="fa-regular fa-comment-dots text-flower-lavender w-3.5 mt-0.5"></i> <span>{{ item.notes }}</span>
+              <div class="mt-2 text-xs text-stone-500 space-y-1 pl-6">
+                <div v-if="item.time" class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-stone-400 w-3.5"></i> 預計時間：{{ item.time }}</div>
+                <div v-if="item.hours" class="flex items-center gap-1.5"><i class="fa-solid fa-store text-stone-400 w-3.5"></i> 營業時間：{{ item.hours }}</div>
+                <div v-if="item.ticket" class="flex items-center gap-1.5"><i class="fa-solid fa-ticket text-stone-400 w-3.5"></i> 門票/費用：{{ item.ticket }}</div>
+                <div v-if="item.notes" class="flex items-start gap-1.5 text-stone-700 bg-stone-50 p-2 rounded-xl mt-1.5 border border-stone-100">
+                  <i class="fa-regular fa-comment-dots text-[#8D7B93] w-3.5 mt-0.5 shrink-0"></i> <span>{{ item.notes }}</span>
                 </div>
               </div>
             </div>
@@ -290,7 +296,7 @@
         </div>
 
         <!-- 新增行程右下角浮動按鈕 -->
-        <button @click="openAddModal" class="fixed bottom-6 right-6 w-13 h-13 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-30 border-2 border-white active:scale-95 transition-all">
+        <button @click="openAddModal" class="fixed bottom-6 right-6 w-12 h-12 bg-[#8D7B93] text-white rounded-full shadow-lg flex items-center justify-center text-xl z-30 active:scale-95 transition-all">
           <i class="fa-solid fa-plus"></i>
         </button>
       </section>
@@ -299,83 +305,71 @@
       <!-- ========================================== -->
       <!-- 分頁二：資訊 (i) -->
       <!-- ========================================== -->
-      <section v-if="activeTab === 'info'" class="space-y-4">
+      <section v-if="activeTab === 'info'" class="space-y-3.5">
         
         <!-- 匯率換算器 -->
-        <div class="bg-white rounded-2xl p-4 shadow-xs border border-purple-100">
-          <h2 class="text-xs font-bold text-purple-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <i class="fa-solid fa-calculator text-flower-lavender"></i> 日幣 / 台幣 匯率試算
+        <div class="bg-white rounded-2xl p-4 shadow-2xs border border-stone-200/80">
+          <h2 class="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-calculator text-[#8D7B93]"></i> 日幣 / 台幣 匯率試算
           </h2>
           <div class="grid grid-cols-2 gap-3 items-center">
             <div>
-              <label class="text-[10px] text-slate-400 block mb-1">外幣 (JPY ¥)</label>
-              <input type="number" v-model="jpyInput" placeholder="10000" class="w-full bg-purple-50/50 font-bold text-slate-800 p-2.5 rounded-xl border border-purple-100 text-sm outline-none focus:ring-2 focus:ring-purple-400">
+              <label class="text-[10px] text-stone-400 block mb-1">外幣 (JPY ¥)</label>
+              <input type="number" v-model="jpyInput" placeholder="10000" class="w-full bg-stone-50 font-bold text-stone-800 p-2.5 rounded-xl border border-stone-200 text-sm outline-none">
             </div>
             <div>
-              <label class="text-[10px] text-slate-400 block mb-1">約合台幣 (TWD $)</label>
-              <div class="w-full bg-amber-50 font-extrabold text-amber-900 p-2.5 rounded-xl border border-amber-200/60 text-sm">
+              <label class="text-[10px] text-stone-400 block mb-1">約合台幣 (TWD $)</label>
+              <div class="w-full bg-stone-100 font-extrabold text-stone-800 p-2.5 rounded-xl border border-stone-200 text-sm">
                 NT$ {{ (jpyInput * jpyRate).toFixed(0) }}
               </div>
             </div>
           </div>
-          <div class="text-[10px] text-slate-400 mt-2 text-right">參考匯率：1 JPY ≈ {{ jpyRate }} TWD</div>
+          <div class="text-[10px] text-stone-400 mt-2 text-right">參考匯率：1 JPY ≈ {{ jpyRate }} TWD</div>
         </div>
 
-        <!-- 住宿資訊 (固定更新為 15-chõme-3-18 Minami 9) -->
-        <div class="bg-white rounded-2xl p-4 shadow-xs border border-purple-100 space-y-2">
-          <h2 class="text-xs font-bold text-purple-900 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-hotel text-flower-lavender"></i> 住宿飯店資訊 (全程連住)
+        <!-- 住宿資訊 -->
+        <div class="bg-white rounded-2xl p-4 shadow-2xs border border-stone-200/80 space-y-2">
+          <h2 class="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-hotel text-[#8D7B93]"></i> 住宿飯店資訊 (全程連住)
           </h2>
-          <div class="text-xs font-extrabold text-slate-800">La manana Asahiyama Koendori</div>
-          <div class="text-xs font-bold text-purple-700 bg-purple-50 p-2 rounded-xl border border-purple-100">
+          <div class="text-xs font-extrabold text-stone-800">La manana Asahiyama Koendori</div>
+          <div class="text-xs font-bold text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-100">
             📍 15-chõme-3-18 Minami 9 (〒064-0809 北海道札幌市中央區南9條西15丁目3-18)
           </div>
-          <div class="text-[11px] text-slate-500">成員：3 位大人 + Jessie (約 5 個月)</div>
-          <button @click="openGoogleNav('15-chõme-3-18 Minami 9')" class="w-full mt-1 bg-gradient-to-r from-purple-600 to-violet-600 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 shadow-xs">
-            <i class="fa-solid fa-map-pin"></i> 導航至住宿飯店 (15-chõme-3-18 Minami 9)
+          <div class="text-[11px] text-stone-500">成員：3 位大人 + Jessie (約 5 個月)</div>
+          <button @click="openGoogleNav('15-chõme-3-18 Minami 9')" class="w-full mt-1 bg-[#8D7B93] text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1 shadow-2xs">
+            <i class="fa-solid fa-map-pin"></i> 導航至住宿飯店
           </button>
         </div>
 
         <!-- 航班資訊 -->
-        <div class="bg-white rounded-2xl p-4 shadow-xs border border-purple-100 space-y-3">
-          <h2 class="text-xs font-bold text-purple-900 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-plane text-flower-lavender"></i> 航班資訊
+        <div class="bg-white rounded-2xl p-4 shadow-2xs border border-stone-200/80 space-y-3">
+          <h2 class="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-plane text-[#8D7B93]"></i> 航班資訊
           </h2>
 
-          <div class="bg-purple-50/50 p-3 rounded-2xl border border-purple-100">
+          <div class="bg-stone-50 p-3 rounded-2xl border border-stone-100">
             <div class="flex justify-between items-center mb-1">
-              <span class="text-[10px] bg-purple-200 text-purple-800 font-bold px-2 py-0.5 rounded-md">去程 IT234</span>
-              <span class="text-xs text-slate-400">2026/08/12 (三)</span>
+              <span class="text-[10px] bg-stone-200 text-stone-700 font-bold px-2 py-0.5 rounded-md">去程 IT234</span>
+              <span class="text-xs text-stone-400">2026/08/12 (三)</span>
             </div>
             <div class="flex justify-between items-center text-center my-1">
-              <div><div class="font-black text-slate-800">TPE</div><div class="text-[10px] text-slate-400">台北桃園</div></div>
-              <i class="fa-solid fa-arrow-right text-purple-300"></i>
-              <div><div class="font-black text-slate-800">CTS</div><div class="text-[10px] text-slate-400">11:05 抵達</div></div>
+              <div><div class="font-bold text-stone-800">TPE</div><div class="text-[10px] text-stone-400">台北桃園</div></div>
+              <i class="fa-solid fa-arrow-right text-stone-300"></i>
+              <div><div class="font-bold text-stone-800">CTS</div><div class="text-[10px] text-stone-400">11:05 抵達</div></div>
             </div>
           </div>
 
-          <div class="bg-purple-50/50 p-3 rounded-2xl border border-purple-100">
+          <div class="bg-stone-50 p-3 rounded-2xl border border-stone-100">
             <div class="flex justify-between items-center mb-1">
-              <span class="text-[10px] bg-amber-200 text-amber-900 font-bold px-2 py-0.5 rounded-md">回程 TR893</span>
-              <span class="text-xs text-slate-400">2026/08/18 (二)</span>
+              <span class="text-[10px] bg-stone-200 text-stone-700 font-bold px-2 py-0.5 rounded-md">回程 TR893</span>
+              <span class="text-xs text-stone-400">2026/08/18 (二)</span>
             </div>
             <div class="flex justify-between items-center text-center my-1">
-              <div><div class="font-black text-slate-800">CTS</div><div class="text-[10px] text-slate-400">19:10 起飛</div></div>
-              <i class="fa-solid fa-arrow-right text-purple-300"></i>
-              <div><div class="font-black text-slate-800">TPE</div><div class="text-[10px] text-slate-400">台北桃園</div></div>
+              <div><div class="font-bold text-stone-800">CTS</div><div class="text-[10px] text-stone-400">19:10 起飛</div></div>
+              <i class="fa-solid fa-arrow-right text-stone-300"></i>
+              <div><div class="font-bold text-stone-800">TPE</div><div class="text-[10px] text-stone-400">台北桃園</div></div>
             </div>
-          </div>
-        </div>
-
-        <!-- 租車與雨天備案 -->
-        <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200/80 space-y-2">
-          <h2 class="text-xs font-bold text-amber-950 flex items-center gap-1.5">
-            <i class="fa-solid fa-cloud-showers-heavy"></i> 備案與租車提醒
-          </h2>
-          <div class="text-[11px] text-amber-900 space-y-1">
-            <div>• <b>長途車程：</b>每 1.5 - 2 小時須停車讓寶寶伸展與換尿布。</div>
-            <div>• <b>富良野大雨：</b>保留起司工房與 Furanoya，花田改短停。</div>
-            <div>• <b>札幌高溫：</b>11:30 - 14:30 盡量安排室內商場或咖啡廳休息。</div>
           </div>
         </div>
 
@@ -385,22 +379,22 @@
       <!-- ========================================== -->
       <!-- 分頁三：購物清單 -->
       <!-- ========================================== -->
-      <section v-if="activeTab === 'shopping'" class="space-y-4">
+      <section v-if="activeTab === 'shopping'" class="space-y-3.5">
         <div class="flex justify-between items-center">
-          <h2 class="text-xs font-bold text-purple-900">🪻 已整理 {{ shoppingList.length }} 項採買商品</h2>
+          <h2 class="text-xs font-bold text-stone-700">🪻 已整理 {{ shoppingList.length }} 項採買商品</h2>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-          <div v-for="item in shoppingList" :key="item.id" class="bg-white rounded-2xl p-2.5 shadow-xs border border-purple-100 flex flex-col justify-between">
-            <div class="w-full h-32 bg-purple-50 rounded-xl overflow-hidden mb-2 relative">
+          <div v-for="item in shoppingList" :key="item.id" class="bg-white rounded-2xl p-2.5 shadow-2xs border border-stone-200/80 flex flex-col justify-between">
+            <div class="w-full h-32 bg-stone-100 rounded-xl overflow-hidden mb-2 relative">
               <img :src="item.image || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?q=80&w=300'" class="w-full h-full object-cover">
-              <button @click="deleteShoppingItem(item.id)" class="absolute top-1.5 right-1.5 bg-black/50 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+              <button @click="deleteShoppingItem(item.id)" class="absolute top-1.5 right-1.5 bg-black/40 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="font-bold text-slate-800 text-xs px-1 truncate">{{ item.name }}</div>
+            <div class="font-bold text-stone-800 text-xs px-1 truncate">{{ item.name }}</div>
           </div>
         </div>
 
-        <button @click="showAddShoppingModal = true" class="fixed bottom-6 right-6 w-13 h-13 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-30 border-2 border-white">
+        <button @click="showAddShoppingModal = true" class="fixed bottom-6 right-6 w-12 h-12 bg-[#8D7B93] text-white rounded-full shadow-lg flex items-center justify-center text-xl z-30">
           <i class="fa-solid fa-plus"></i>
         </button>
       </section>
@@ -409,32 +403,32 @@
       <!-- ========================================== -->
       <!-- 分頁四：花費記帳 -->
       <!-- ========================================== -->
-      <section v-if="activeTab === 'expenses'" class="space-y-4">
-        <div class="bg-gradient-to-br from-purple-700 via-purple-600 to-pink-500 text-white rounded-2xl p-4 shadow-md text-center">
-          <span class="text-xs opacity-90 block">🪻 北海道旅行累積總花費</span>
-          <div class="text-2xl font-black my-1">¥ {{ totalExpensesJPY.toLocaleString() }}</div>
-          <span class="text-xs bg-white/20 px-3 py-1 rounded-full inline-block mt-1">約 NT$ {{ (totalExpensesJPY * jpyRate).toFixed(0) }}</span>
+      <section v-if="activeTab === 'expenses'" class="space-y-3.5">
+        <div class="bg-[#8D7B93] text-white rounded-2xl p-4 shadow-2xs text-center">
+          <span class="text-xs opacity-80 block">🪻 北海道旅行累積總花費</span>
+          <div class="text-2xl font-bold my-1">¥ {{ totalExpensesJPY.toLocaleString() }}</div>
+          <span class="text-xs bg-white/20 px-3 py-0.5 rounded-full inline-block mt-1">約 NT$ {{ (totalExpensesJPY * jpyRate).toFixed(0) }}</span>
         </div>
 
         <div class="space-y-2">
-          <div v-for="exp in expenseList" :key="exp.id" class="bg-white rounded-2xl p-3 shadow-xs border border-purple-100 flex items-center justify-between">
+          <div v-for="exp in expenseList" :key="exp.id" class="bg-white rounded-2xl p-3 shadow-2xs border border-stone-200/80 flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-sm">
+              <div class="w-9 h-9 rounded-xl bg-stone-100 text-stone-600 flex items-center justify-center font-bold text-sm">
                 {{ getExpenseIcon(exp.category) }}
               </div>
               <div>
-                <div class="font-bold text-slate-800 text-xs">{{ exp.name }}</div>
-                <div class="text-[10px] text-slate-400">{{ exp.date }} • {{ exp.paymentMethod }}</div>
+                <div class="font-bold text-stone-800 text-xs">{{ exp.name }}</div>
+                <div class="text-[10px] text-stone-400">{{ exp.date }} • {{ exp.paymentMethod }}</div>
               </div>
             </div>
             <div class="text-right">
-              <div class="font-extrabold text-slate-800 text-sm">¥ {{ Number(exp.amount).toLocaleString() }}</div>
+              <div class="font-bold text-stone-800 text-sm">¥ {{ Number(exp.amount).toLocaleString() }}</div>
               <button @click="deleteExpense(exp.id)" class="text-[10px] text-rose-400 hover:underline">刪除</button>
             </div>
           </div>
         </div>
 
-        <button @click="showAddExpenseModal = true" class="fixed bottom-6 right-6 w-13 h-13 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-30 border-2 border-white">
+        <button @click="showAddExpenseModal = true" class="fixed bottom-6 right-6 w-12 h-12 bg-[#8D7B93] text-white rounded-full shadow-lg flex items-center justify-center text-xl z-30">
           <i class="fa-solid fa-plus"></i>
         </button>
       </section>
@@ -443,19 +437,19 @@
 
 
     <!-- 彈出視窗 Modal：新增/編輯行程 -->
-    <div v-if="showItineraryModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl p-5 w-full max-w-sm shadow-2xl space-y-3">
-        <h3 class="font-extrabold text-slate-800 text-base">{{ isEditing ? '編輯行程' : '新增行程' }}</h3>
+    <div v-if="showItineraryModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-xl space-y-3">
+        <h3 class="font-bold text-stone-800 text-base">{{ isEditing ? '編輯行程' : '新增行程' }}</h3>
         
         <div>
-          <label class="text-[10px] text-slate-400 font-bold block mb-1">行程名稱</label>
-          <input type="text" v-model="formItinerary.title" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs font-bold border border-slate-200 outline-none">
+          <label class="text-[10px] text-stone-400 font-bold block mb-1">行程名稱</label>
+          <input type="text" v-model="formItinerary.title" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs font-bold border border-stone-200 outline-none">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="text-[10px] text-slate-400 font-bold block mb-1">分類</label>
-            <select v-model="formItinerary.category" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs font-bold border border-slate-200 outline-none">
+            <label class="text-[10px] text-stone-400 font-bold block mb-1">分類</label>
+            <select v-model="formItinerary.category" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs font-bold border border-stone-200 outline-none">
               <option value="景點">景點</option>
               <option value="住宿">住宿</option>
               <option value="美食">美食</option>
@@ -465,54 +459,54 @@
             </select>
           </div>
           <div>
-            <label class="text-[10px] text-slate-400 font-bold block mb-1">預計時間</label>
-            <input type="text" v-model="formItinerary.time" placeholder="10:00 - 11:30" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs border border-slate-200 outline-none">
+            <label class="text-[10px] text-stone-400 font-bold block mb-1">預計時間</label>
+            <input type="text" v-model="formItinerary.time" placeholder="10:00 - 11:30" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200 outline-none">
           </div>
         </div>
 
         <div>
-          <label class="text-[10px] text-slate-400 font-bold block mb-1">門票/費用</label>
-          <input type="text" v-model="formItinerary.ticket" placeholder="免費 / ¥1,000" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs border border-slate-200 outline-none">
+          <label class="text-[10px] text-stone-400 font-bold block mb-1">門票/費用</label>
+          <input type="text" v-model="formItinerary.ticket" placeholder="免費 / ¥1,000" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200 outline-none">
         </div>
 
         <div>
-          <label class="text-[10px] text-slate-400 font-bold block mb-1">特色 & 備註</label>
-          <textarea v-model="formItinerary.notes" rows="2" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs border border-slate-200 outline-none"></textarea>
+          <label class="text-[10px] text-stone-400 font-bold block mb-1">特色 & 備註</label>
+          <textarea v-model="formItinerary.notes" rows="2" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200 outline-none"></textarea>
         </div>
 
         <div class="flex gap-2 pt-2">
-          <button v-if="isEditing" @click="confirmDeleteItinerary" class="bg-rose-100 text-rose-600 font-bold px-3 py-2.5 rounded-xl text-xs hover:bg-rose-200">
+          <button v-if="isEditing" @click="confirmDeleteItinerary" class="bg-rose-50 text-rose-600 font-bold px-3 py-2.5 rounded-xl text-xs">
             刪除
           </button>
-          <button @click="showItineraryModal = false" class="flex-1 bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">取消</button>
-          <button @click="saveItinerary" class="flex-1 bg-purple-600 text-white font-bold py-2.5 rounded-xl text-xs shadow-md">儲存</button>
+          <button @click="showItineraryModal = false" class="flex-1 bg-stone-100 text-stone-600 font-bold py-2.5 rounded-xl text-xs">取消</button>
+          <button @click="saveItinerary" class="flex-1 bg-[#8D7B93] text-white font-bold py-2.5 rounded-xl text-xs shadow-2xs">儲存</button>
         </div>
       </div>
     </div>
 
 
     <!-- 彈出視窗 Modal：新增購物項目 -->
-    <div v-if="showAddShoppingModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl p-5 w-full max-w-sm shadow-2xl space-y-3">
-        <h3 class="font-extrabold text-slate-800 text-base">新增購物項目</h3>
-        <input type="text" v-model="newShoppingName" placeholder="商品名稱" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs border border-slate-200">
+    <div v-if="showAddShoppingModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-xl space-y-3">
+        <h3 class="font-bold text-stone-800 text-base">新增購物項目</h3>
+        <input type="text" v-model="newShoppingName" placeholder="商品名稱" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200">
         <div>
-          <label class="text-[10px] text-slate-400 font-bold block mb-1">上傳照片</label>
-          <input type="file" @change="handleImageUpload" accept="image/*" class="text-xs text-slate-500">
+          <label class="text-[10px] text-stone-400 font-bold block mb-1">上傳照片</label>
+          <input type="file" @change="handleImageUpload" accept="image/*" class="text-xs text-stone-500">
         </div>
         <div class="flex gap-2 pt-2">
-          <button @click="showAddShoppingModal = false" class="flex-1 bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">取消</button>
-          <button @click="addShoppingItem" class="flex-1 bg-purple-600 text-white font-bold py-2.5 rounded-xl text-xs">新增</button>
+          <button @click="showAddShoppingModal = false" class="flex-1 bg-stone-100 text-stone-600 font-bold py-2.5 rounded-xl text-xs">取消</button>
+          <button @click="addShoppingItem" class="flex-1 bg-[#8D7B93] text-white font-bold py-2.5 rounded-xl text-xs">新增</button>
         </div>
       </div>
     </div>
 
 
     <!-- 彈出視窗 Modal：新增花費 -->
-    <div v-if="showAddExpenseModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-3xl p-5 w-full max-w-sm shadow-2xl space-y-3">
-        <h3 class="font-extrabold text-slate-800 text-base">新增花費記錄</h3>
-        <select v-model="newExpense.category" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs font-bold border border-slate-200">
+    <div v-if="showAddExpenseModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-xl space-y-3">
+        <h3 class="font-bold text-stone-800 text-base">新增花費記錄</h3>
+        <select v-model="newExpense.category" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs font-bold border border-stone-200">
           <option value="飲食">飲食</option>
           <option value="交通">交通</option>
           <option value="住宿">住宿</option>
@@ -520,15 +514,15 @@
           <option value="購物">購物</option>
           <option value="其他">其他</option>
         </select>
-        <input type="text" v-model="newExpense.name" placeholder="項目名稱" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs border border-slate-200">
-        <input type="number" v-model="newExpense.amount" placeholder="金額 (日幣 JPY)" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs border border-slate-200">
-        <select v-model="newExpense.paymentMethod" class="w-full bg-slate-50 p-2.5 rounded-xl text-xs border border-slate-200">
+        <input type="text" v-model="newExpense.name" placeholder="項目名稱" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200">
+        <input type="number" v-model="newExpense.amount" placeholder="金額 (日幣 JPY)" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200">
+        <select v-model="newExpense.paymentMethod" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200">
           <option value="現金">現金</option>
           <option value="信用卡">信用卡</option>
         </select>
         <div class="flex gap-2 pt-2">
-          <button @click="showAddExpenseModal = false" class="flex-1 bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl text-xs">取消</button>
-          <button @click="addExpense" class="flex-1 bg-purple-600 text-white font-bold py-2.5 rounded-xl text-xs">儲存花費</button>
+          <button @click="showAddExpenseModal = false" class="flex-1 bg-stone-100 text-stone-600 font-bold py-2.5 rounded-xl text-xs">取消</button>
+          <button @click="addExpense" class="flex-1 bg-[#8D7B93] text-white font-bold py-2.5 rounded-xl text-xs">儲存花費</button>
         </div>
       </div>
     </div>
@@ -548,15 +542,13 @@
         const jpyInput = ref(10000);
         const jpyRate = ref(0.21);
 
-        // 住宿地址統一設定為：15-chõme-3-18 Minami 9
         const HOTEL_ADDRESS = '15-chõme-3-18 Minami 9';
 
-        // 7 天行程資料 (每日第一行程皆由 15-chõme-3-18 Minami 9 出發)
         const days = ref([
           {
             weekDay: 'Wed', dateNum: '12', fullDate: '2026/08/12', theme: '抵達札幌 + 狸小路採買',
             startLocation: '新千歲機場 CTS',
-            weather: { region: '札幌', condition: '24-29℃ 日照偏熱', temp: '24-29°C', advice: '短袖為主，備薄外套', icon: 'fa-solid fa-sun text-amber-400' },
+            weather: { region: '札幌', condition: '24-29℃ 日照舒適', temp: '24-29°C', advice: '短袖為主，備薄外套', icon: 'fa-solid fa-sun text-amber-500' },
             babyTip: '機場先餵奶換尿布，領車後第一段車程盡量讓 Jessie 睡覺。',
             items: [
               { id: '1-1', category: '航班', title: '抵達新千歲機場 IT234', time: '11:05', ticket: '', notes: '領行李、換尿布、餵奶；不急著衝櫃檯。', navQuery: 'New Chitose Airport', transportType: 'car', travelTime: '45 分鐘' },
@@ -568,7 +560,7 @@
           {
             weekDay: 'Thu', dateNum: '13', fullDate: '2026/08/13', theme: '札幌市區慢遊 + 晚間電視塔',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '札幌市區', condition: '24-29℃ 溫和快適', temp: '24-29°C', advice: '大通公園樹陰處活動', icon: 'fa-solid fa-cloud-sun text-amber-300' },
+            weather: { region: '札幌市區', condition: '24-29℃ 溫和快適', temp: '24-29°C', advice: '大通公園樹陰處活動', icon: 'fa-solid fa-cloud-sun text-amber-500' },
             babyTip: '下午刻意留在住宿處休息，確保寶寶午睡。電視塔建議 19:00 登塔，勿拖過晚。',
             items: [
               { id: '2-1', category: '景點', title: '大通公園散步 (由住宿出發)', time: '09:00', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 12 分鐘。散步讓 Jessie 在陰影處活動。`, navQuery: '大通公園', transportType: 'car', travelTime: '12 分鐘' },
@@ -580,7 +572,7 @@
           {
             weekDay: 'Fri', dateNum: '14', fullDate: '2026/08/14', theme: '白色戀人公園 + 小樽運河漫遊',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '小樽沿海', condition: '23-27℃ 海風較明顯', temp: '23-27°C', advice: '攜帶薄襯衫或輕外套', icon: 'fa-solid fa-wind text-sky-300' },
+            weather: { region: '小樽沿海', condition: '23-27℃ 海風較明顯', temp: '23-27°C', advice: '攜帶薄襯衫或輕外套', icon: 'fa-solid fa-wind text-slate-400' },
             babyTip: '小樽石板路較顛簸，建議推車與背巾皆隨身攜帶。',
             items: [
               { id: '3-1', category: '景點', title: '白色戀人公園 (由住宿出發)', time: '08:30 出發', hours: '10:00-18:00', ticket: '庭園免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發前往。歐式庭園拍照、吃白色戀人霜淇淋。`, navQuery: '白色戀人公園', transportType: 'car', travelTime: '20 分鐘' },
@@ -598,14 +590,14 @@
               { id: '4-1', category: '美食', title: 'Furanoya 湯咖哩 (由住宿出發)', time: '08:00 出發', hours: '11:00 起', ticket: '約 ¥1,200', notes: `由住宿點 (${HOTEL_ADDRESS}) 開車前往富良野，約 2 小時。富良野蔬菜湯咖哩。`, navQuery: 'Furanoya 富良野', transportType: 'car', travelTime: '2 小時' },
               { id: '4-2', category: '景點', title: '富良野起司工房', time: '12:00-13:00', hours: '09:00-17:00', ticket: '免費', notes: '室內參觀、買起司與牛奶，炎熱時的優質休息點。', navQuery: '富良野起司工房', transportType: 'car', travelTime: '15 分鐘' },
               { id: '4-3', category: '景點', title: '富田農場 + 富田哈密瓜農場', time: '13:20-15:20', hours: '08:30-17:00', ticket: '免費', notes: '兩處相鄰停一次車：當季花田散步、哈密瓜霜淇淋。', navQuery: '富田農場', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '4-4', category: '美食', title: 'Popura Farm Café', time: '15:30-16:30', hours: '至 17:00', ticket: '約 ¥1,400', notes: '距離富田農場僅約 10 分鐘！品嚐 Santa no Hige 哈密瓜霜淇淋，為返程作準備。', navQuery: 'Popura Farm Café', transportType: 'car', travelTime: '2 小時' },
-              { id: '4-5', category: '美食', title: '札幌場外市場海鮮晚餐', time: '18:30-20:00', hours: '晚間專營海鮮餐廳', ticket: '約 ¥3,500', notes: '回札幌途中直達場外市場，享用新鮮海鮮丼與帝王蟹美食！後返回住宿。', navQuery: '札幌場外市場', transportType: 'car', travelTime: '15 分鐘' }
+              { id: '4-4', category: '美食', title: 'Popura Farm Café', time: '15:30-16:30', hours: '至 17:00', ticket: '約 ¥1,400', notes: '距離富田農場僅約 10 分鐘！品嚐 Santa no Hige 哈密瓜霜淇淋，為返程作準備。', navQuery: 'Popura Farm Café', transportType: 'car', travelTime: '10 分鐘' },
+              { id: '4-5', category: '美食', title: '札幌場外市場海鮮晚餐', time: '18:30-20:00', hours: '晚間專營海鮮餐廳', ticket: '約 ¥3,500', notes: '回札幌長途車程約 2 小時，直達場外市場享用新鮮海鮮丼與帝王蟹美食！後返回住宿。', navQuery: '札幌場外市場', transportType: 'car', travelTime: '2 小時' }
             ]
           },
           {
             weekDay: 'Sun', dateNum: '16', fullDate: '2026/08/16', theme: '支笏湖放鬆日 + 晚間成吉思汗烤肉',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '支笏湖', condition: '21-26℃ 湖邊風較涼', temp: '21-26°C', advice: '必備防風薄外套與寶寶薄毯', icon: 'fa-solid fa-cloud-sun text-sky-400' },
+            weather: { region: '支笏湖', condition: '21-26℃ 湖邊風較涼', temp: '21-26°C', advice: '必備防風薄外套與寶寶薄毯', icon: 'fa-solid fa-cloud-sun text-slate-400' },
             babyTip: '湖邊風強，若 Jessie 在睡覺留在岸邊最舒服，不必強求搭船。',
             items: [
               { id: '5-1', category: '景點', title: '支笏湖遊客中心 (由住宿出發)', time: '08:30 出發', hours: '09:00-17:30', ticket: '停車費約 ¥1,000', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，約 1 小時 15 分鐘車程。湖岸與溫泉街徒步。`, navQuery: '支笏湖遊客中心', transportType: 'car', travelTime: '1 小時 15 分' },
@@ -617,19 +609,19 @@
           {
             weekDay: 'Mon', dateNum: '17', fullDate: '2026/08/17', theme: '札幌購物日 (Ario & 根室花丸)',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '札幌市區', condition: '24-28℃ 室內空調穩定', temp: '24-28°C', advice: '商場育嬰設施最齊全', icon: 'fa-solid fa-bag-shopping text-pink-400' },
+            weather: { region: '札幌市區', condition: '24-28℃ 室內空調穩定', temp: '24-28°C', advice: '商場育嬰設施最齊全', icon: 'fa-solid fa-bag-shopping text-stone-400' },
             babyTip: '今日育嬰設備最完整，方便安排規律餵奶與午睡。',
             items: [
               { id: '6-1', category: '購物', title: 'Ario 札幌購物中心 (由住宿出發)', time: '09:45 出發', hours: '10:00 起', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 15 分鐘。採購阿卡將育嬰用品。`, navQuery: 'Ario 札幌', transportType: 'car', travelTime: '15 分鐘' },
               { id: '6-2', category: '美食', title: '根室花丸 JR Tower 店', time: '13:00-14:30', hours: '11:00 起', ticket: '依盤計費', notes: '先抽號碼牌後逛商場等候。必點花咲蟹鐵砲汁、鮭魚卵。', navQuery: '根室花丸 JR Tower Stellar Place', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '6-3', category: '購物', title: 'Stellar Place / 大丸百貨購物', time: '14:30-16:30', ticket: '', notes: '與花丸同一區，集中購買伴手禮與服飾。', navQuery: 'Stellar Place 札幌', transportType: 'walk', travelTime: '5 分鐘' },
+              { id: '6-3', category: '購物', title: 'Stellar Place / 大丸百貨購物', time: '14:30-16:30', ticketガイド='', notes: '與花丸同一區，集中購買伴手禮與服飾。', navQuery: 'Stellar Place 札幌', transportType: 'walk', travelTime: '5 分鐘' },
               { id: '6-4', category: '購物', title: 'Super ARCS Yamahana 超市', time: '17:00-18:00', hours: '至 23:00', ticket: '', notes: `買哈密瓜、鮮奶與最後補貨，回住宿點 (${HOTEL_ADDRESS}) 打包。`, navQuery: 'Super ARCS Yamahana', transportType: 'car', travelTime: '10 分鐘' }
             ]
           },
           {
             weekDay: 'Tue', dateNum: '18', fullDate: '2026/08/18', theme: '新千歲機場巡禮 + 返台',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '新千歲機場', condition: '室內冷氣舒適', temp: '24°C', advice: '注意室內外溫差分層穿脫', icon: 'fa-solid fa-plane-departure text-purple-600' },
+            weather: { region: '新千歲機場', condition: '室內冷氣舒適', temp: '24°C', advice: '注意室內外溫差分層穿脫', icon: 'fa-solid fa-plane-departure text-stone-500' },
             babyTip: '飛機起飛時餵奶或讓 Jessie 吸奶嘴協助吞嚥，可減少耳壓不適。',
             items: [
               { id: '7-1', category: '其他', title: '退房整理 & 出發前往加油還車', time: '11:30 出發', ticket: '', notes: `由住宿點 (${HOTEL_ADDRESS}) 退房出發前往加油站，12:45-13:30 還車搭接駁車至機場。`, navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '50 分鐘' },
@@ -646,14 +638,12 @@
           return currentDay.value.items.filter(i => i.category === categoryFilter.value);
         });
 
-        // 預設採買清單
         const shoppingList = ref([
           { id: '1', name: 'LeTAO 雙層起司蛋糕', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?q=80&w=300' },
           { id: '2', name: '阿卡將 Jessie 寶寶用品', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=300' },
           { id: '3', name: '六花亭 奶油葡萄餅乾', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=300' }
         ]);
 
-        // 預設花費紀錄
         const expenseList = ref([
           { id: '1', category: '飲食', name: '一幻拉麵晚餐', amount: 3200, date: '2026/08/12', paymentMethod: '現金' },
           { id: '2', category: '交通', name: '新千歲機場租車加油', amount: 4500, date: '2026/08/12', paymentMethod: '信用卡' }
@@ -661,7 +651,6 @@
 
         const totalExpensesJPY = computed(() => expenseList.value.reduce((sum, item) => sum + Number(item.amount), 0));
 
-        // Modal 控制邏輯
         const showItineraryModal = ref(false);
         const isEditing = ref(false);
         const formItinerary = ref({ id: '', title: '', category: '景點', time: '', ticket: '', notes: '', navQuery: '' });
@@ -678,21 +667,22 @@
           window.open(url, '_blank');
         };
 
+        // 莫蘭迪分類標籤配色
         const getCategoryBadge = (cat) => {
           const map = { 
-            '景點': 'bg-purple-100 text-purple-900', 
-            '住宿': 'bg-indigo-100 text-indigo-900', 
-            '美食': 'bg-amber-100 text-amber-900', 
-            '購物': 'bg-pink-100 text-pink-900', 
-            '航班': 'bg-sky-100 text-sky-900' 
+            '景點': 'bg-[#EAE4EC] text-[#5C4B61]', 
+            '住宿': 'bg-[#E3E8EC] text-[#41515E]', 
+            '美食': 'bg-[#ECE6DF] text-[#635343]', 
+            '購物': 'bg-[#EBE1E3] text-[#69464E]', 
+            '航班': 'bg-[#E1E6EB] text-[#3D4F5E]' 
           };
-          return map[cat] || 'bg-slate-100 text-slate-800';
+          return map[cat] || 'bg-stone-200 text-stone-700';
         };
 
         const getTransportIcon = (type) => {
-          if (type === 'walk') return 'fa-solid fa-person-walking text-pink-500';
-          if (type === 'bus') return 'fa-solid fa-bus text-amber-500';
-          return 'fa-solid fa-car text-flower-lavender';
+          if (type === 'walk') return 'fa-solid fa-person-walking text-[#B68D97]';
+          if (type === 'bus') return 'fa-solid fa-bus text-[#C29B72]';
+          return 'fa-solid fa-car text-[#8D7B93]';
         };
 
         const getExpenseIcon = (cat) => {
@@ -804,3 +794,5 @@
   </script>
 </body>
 </html>
+
+    

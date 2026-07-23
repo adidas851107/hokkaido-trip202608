@@ -24,16 +24,16 @@
         extend: {
           colors: {
             morandi: {
-              bg: '#F5F3F0',          /* 莫蘭迪暖灰米底 */
-              cardBg: '#FFFFFF',      /* 純白卡片 */
-              lavender: '#8D7B93',    /* 莫蘭迪霧紫 */
+              bg: '#F5F3F0',
+              cardBg: '#FFFFFF',
+              lavender: '#8D7B93',
               lavenderDark: '#6E5D74',
-              sage: '#8A9A86',        /* 莫蘭迪鼠尾草綠 */
-              dustyRose: '#B68D97',   /* 莫蘭迪煙燻粉 */
-              slate: '#6B7A8D',       /* 莫蘭迪藍灰 */
-              amber: '#C29B72',       /* 莫蘭迪暖琥珀 */
-              text: '#3D3A39',        /* 溫和深灰文字 */
-              muted: '#8C8885'        /* 柔和次要文字 */
+              sage: '#8A9A86',
+              dustyRose: '#B68D97',
+              slate: '#6B7A8D',
+              amber: '#C29B72',
+              text: '#3D3A39',
+              muted: '#8C8885'
             }
           },
           fontFamily: {
@@ -53,6 +53,11 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .animate-fadeIn { animation: fadeIn 0.15s ease-out forwards; }
   </style>
 </head>
 <body class="min-h-screen flex justify-center items-start">
@@ -117,7 +122,7 @@
           </button>
         </div>
 
-        <!-- 當日主題與評分卡片 (減重優化) -->
+        <!-- 當日主題與評分卡片 (附帶連假提醒標籤) -->
         <div class="bg-white/90 backdrop-blur-xs p-3 rounded-2xl border border-stone-200/70 shadow-2xs space-y-2">
           <div class="flex justify-between items-center">
             <div class="text-xs font-extrabold text-stone-800 flex items-center gap-1.5">
@@ -134,9 +139,21 @@
             </select>
           </div>
 
-          <div class="text-xs font-bold text-stone-600 flex items-center gap-1 truncate">
-            <span class="text-[#C29B72]">🌻</span>
-            <span class="truncate">主題：{{ currentDay.theme }}</span>
+          <div class="text-xs font-bold text-stone-600 flex items-center justify-between gap-1">
+            <div class="flex items-center gap-1 truncate">
+              <span class="text-[#C29B72]">🌻</span>
+              <span class="truncate">主題：{{ currentDay.theme }}</span>
+            </div>
+
+            <!-- 連假提醒點擊標籤 -->
+            <button 
+              v-if="currentDay.noticeKey" 
+              @click="openNotice(currentDay.noticeKey)"
+              class="shrink-0 bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full text-[10px] font-extrabold flex items-center gap-1 hover:bg-amber-200 transition-all cursor-pointer"
+            >
+              <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+              <span>{{ notices[currentDay.noticeKey].tag }}</span>
+            </button>
           </div>
 
           <!-- 精簡後的寶寶友善度標籤 -->
@@ -163,7 +180,7 @@
           </div>
         </div>
 
-        <!-- 育兒提醒卡片 (精簡) -->
+        <!-- 育兒提醒卡片 -->
         <div class="bg-[#B68D97]/15 text-stone-800 text-xs p-2.5 rounded-2xl border border-[#B68D97]/30 flex items-start gap-2 shadow-2xs">
           <i class="fa-solid fa-heart-pulse text-[#B68D97] mt-0.5 text-xs shrink-0"></i>
           <div class="text-[11px] leading-relaxed"><span class="font-bold text-stone-900">育兒建議：</span>{{ currentDay.babyTip }}</div>
@@ -216,6 +233,19 @@
 
               <!-- 卡片細節 -->
               <div class="mt-2 text-[11px] text-stone-500 space-y-1 pl-5">
+                
+                <!-- 點擊跳轉注意事項標籤 -->
+                <div v-if="item.noticeKey" class="mb-1">
+                  <button 
+                    @click.stop="openNotice(item.noticeKey)"
+                    class="inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300/80 hover:bg-amber-100 transition-all cursor-pointer shadow-2xs"
+                  >
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                    <span>{{ notices[item.noticeKey].tag }}</span>
+                    <span class="text-[9px] text-amber-600 font-normal">點擊說明 ></span>
+                  </button>
+                </div>
+
                 <div v-if="item.time" class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-stone-400 w-3"></i> {{ item.time }}</div>
                 <div v-if="item.hours" class="flex items-center gap-1.5"><i class="fa-solid fa-store text-stone-400 w-3"></i> 營業：{{ item.hours }}</div>
                 <div v-if="item.ticket" class="flex items-center gap-1.5"><i class="fa-solid fa-ticket text-stone-400 w-3"></i> 預算：{{ item.ticket }}</div>
@@ -239,7 +269,7 @@
                   <span>{{ item.notes }}</span>
                 </div>
 
-                <!-- 徹底美化與精簡後的 Plan B 卡片 -->
+                <!-- Plan B 卡片 -->
                 <div v-if="item.planB" class="bg-amber-500/10 border border-amber-300/60 p-2.5 rounded-xl text-stone-800 space-y-1.5 mt-2 shadow-2xs">
                   <div class="flex items-center justify-between">
                     <span class="inline-flex items-center gap-1 text-[10px] font-extrabold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">
@@ -273,9 +303,37 @@
       </section>
 
       <!-- ========================================== -->
-      <!-- 分頁二：資訊 (i) -->
+      <!-- 分頁二：資訊 (i) + 注意事項總覽 -->
       <!-- ========================================== -->
       <section v-if="activeTab === 'info'" class="space-y-3">
+        
+        <!-- 5 大行程盲點與注意事項卡片專區 -->
+        <div class="bg-white rounded-2xl p-3.5 shadow-2xs border border-stone-200/80 space-y-2.5">
+          <h2 class="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-triangle-exclamation text-amber-600"></i> 行程隱形盲點與注意事項
+          </h2>
+
+          <div class="space-y-2">
+            <div 
+              v-for="(notice, key) in notices" 
+              :key="key"
+              @click="openNotice(key)"
+              class="p-2.5 rounded-xl border border-amber-200/80 bg-amber-50/50 hover:bg-amber-100/50 transition-all cursor-pointer flex items-start gap-2.5 shadow-2xs"
+            >
+              <div class="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs shrink-0 mt-0.5">
+                <i :class="notice.icon"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-1">
+                  <span class="text-xs font-extrabold text-stone-800 truncate">{{ notice.title }}</span>
+                  <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-1.5 py-0.2 rounded shrink-0">{{ notice.tag }}</span>
+                </div>
+                <div class="text-[11px] text-stone-600 line-clamp-2 mt-0.5 leading-snug">{{ notice.content }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- 匯率試算 -->
         <div class="bg-white rounded-2xl p-3.5 shadow-2xs border border-stone-200/80">
           <h2 class="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
@@ -312,7 +370,34 @@
 
     </main>
 
-    <!-- Modal 彈窗 -->
+    <!-- 注意事項詳細彈窗 Modal -->
+    <div v-if="showNoticeModal && currentNotice" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl p-4 w-full max-w-sm shadow-xl space-y-3 relative animate-fadeIn border border-stone-100">
+        <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">
+              <i :class="currentNotice.icon"></i>
+            </span>
+            <h3 class="font-bold text-stone-800 text-xs truncate max-w-[200px]">{{ currentNotice.title }}</h3>
+          </div>
+          <button @click="showNoticeModal = false" class="text-stone-400 hover:text-stone-600 p-1 text-sm">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="text-xs text-stone-700 leading-relaxed bg-amber-50/60 p-3 rounded-xl border border-amber-200/60 font-medium">
+          {{ currentNotice.content }}
+        </div>
+
+        <div class="pt-1">
+          <button @click="showNoticeModal = false" class="w-full bg-[#8D7B93] hover:bg-[#6E5D74] text-white font-bold py-2 rounded-xl text-xs shadow-2xs transition-colors">
+            我知道了
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 行程編輯/新增 Modal 彈窗 -->
     <div v-if="showItineraryModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl p-4 w-full max-w-sm shadow-xl space-y-2.5">
         <h3 class="font-bold text-stone-800 text-sm">{{ isEditing ? '編輯行程' : '新增行程' }}</h3>
@@ -359,6 +444,50 @@
 
         const HOTEL_ADDRESS = '15-chõme-3-18 Minami 9';
 
+        // 5 大注意事項資料集
+        const notices = ref({
+          obon: {
+            icon: 'fa-solid fa-car-burst',
+            title: '8/13–8/16 日本盂蘭盆連假 (Obon)',
+            tag: '盂蘭盆連假',
+            content: '遇上日本返鄉大連假！富良野 (Day 4) 聯外道路極易大塞車，請於 07:30 前提早出發；熱門餐廳排隊時間可能拉長，遇排隊請果斷切換 Plan B。'
+          },
+          carseat: {
+            icon: 'fa-solid fa-child-car-seat',
+            title: '汽座 1.5~2 小時上限與國道休息站',
+            tag: '汽座2h/砂川SA',
+            content: '5 個月寶寶脊椎未完全發育，連續坐汽座請勿超過 1.5–2 小時。長途 (札幌↔富良野) 建議於國道「砂川 SA」停靠 20 分鐘換尿布與抱起伸展。'
+          },
+          hotel: {
+            icon: 'fa-solid fa-bath',
+            title: 'La manana 公寓式飯店育兒備品確認',
+            tag: '備品澡盆確認',
+            content: '無人/公寓式飯店通常不主動提供嬰兒用品。請事先向飯店確認/借用嬰兒澡盆（ベビーバス），並留意床鋪靠牆或自備防跌落措施。'
+          },
+          water: {
+            icon: 'fa-solid fa-bottle-water',
+            title: '超商泡奶「軟水」選擇指南',
+            tag: '泡奶選軟水',
+            content: '日本部分礦泉水礦物質含量高可能增加寶寶腎臟負擔。至超商採買請選擇硬度 50mg/L 以下的「軟水」或認明包裝上寫有「赤ちゃんの水」。'
+          },
+          mapcode: {
+            icon: 'fa-solid fa-map-location-dot',
+            title: '車機 MapCode 與車用手機支架',
+            tag: '導航&支架',
+            content: '日本車機多用電話號碼或 MapCode 搜尋。請準備車用手機支架，搭配 Google Maps 看即時路況，能及時避開連假塞車潮。'
+          }
+        });
+
+        const showNoticeModal = ref(false);
+        const currentNotice = ref(null);
+
+        const openNotice = (key) => {
+          if (notices.value[key]) {
+            currentNotice.value = notices.value[key];
+            showNoticeModal.value = true;
+          }
+        };
+
         const days = ref([
           {
             weekDay: 'Wed', dateNum: '12', fullDate: '2026/08/12', theme: '抵達札幌 + 狸小路採買',
@@ -368,14 +497,15 @@
             babyTip: '機場領車前換尿布餵奶。狸小路平坦好推車，停車選有電梯場地。',
             items: [
               { id: '1-1', category: '航班', title: '抵達新千歲機場 IT234', time: '11:05', ticket: '', notes: '領行李、換尿布；機場 2F/3F 有優質育嬰室。', navQuery: 'New Chitose Airport', transportType: 'car', travelTime: '45 分鐘' },
-              { id: '1-2', category: '其他', title: '領車與安裝安全座椅', time: '12:30-13:15', ticket: '', notes: '確認汽座固定與 ETC 卡，寶寶上車前維持舒服狀態。', navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '1 小時', babyFriendly: '🍼 接駁車可放折疊推車' },
+              { id: '1-2', category: '其他', title: '領車與安裝安全座椅', noticeKey: 'mapcode', time: '12:30-13:15', ticket: '', notes: '確認汽座固定與 ETC 卡，寶寶上車前維持舒服狀態。', navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '1 小時', babyFriendly: '🍼 接駁車可放折疊推車' },
               { id: '1-3', category: '購物', title: '狸小路商店街', time: '約 14:30', hours: '各大商店營業中', ticket: '免費', notes: '🅿️ 停於 Times 狸小路週邊。拱廊街平坦極適合推車。', navQuery: '狸小路商店街', transportType: 'car', travelTime: '15 分鐘', babyFriendly: '🛒 全線平坦推車極友善' },
-              { id: '1-4', category: '購物', title: 'Seicomart 便利商店補貨', time: '約 16:30', hours: '24小時', ticket: '', notes: '買熱食炸雞、鮮奶與宵夜。門口平坦好進出。', navQuery: 'Seicomart 中央店', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🛒 門口平坦推車好進出' },
-              { id: '1-5', category: '住宿', title: '入住 La manana 飯店', time: '約 17:00', ticket: '', notes: `入住：${HOTEL_ADDRESS}。洗澡餵奶早點休息。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🍼 附廚房溫奶方便' }
+              { id: '1-4', category: '購物', title: 'Seicomart 便利商店補貨', noticeKey: 'water', time: '約 16:30', hours: '24小時', ticket: '', notes: '買熱食炸雞、鮮奶與宵夜。門口平坦好進出。', navQuery: 'Seicomart 中央店', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🛒 門口平坦推車好進出' },
+              { id: '1-5', category: '住宿', title: '入住 La manana 飯店', noticeKey: 'hotel', time: '約 17:00', ticket: '', notes: `入住：${HOTEL_ADDRESS}。洗澡餵奶早點休息。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🍼 附廚房溫奶方便' }
             ]
           },
           {
             weekDay: 'Thu', dateNum: '13', fullDate: '2026/08/13', theme: '場外市場海鮮 + KINOTOYA + 大通夜景',
+            noticeKey: 'obon',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
             babyScore: '🍼 4.2 / 5 (店家座位寬敞)',
             weather: { region: '札幌市區', condition: '24-29℃ 溫和快適', temp: '24-29°C', advice: '大通公園樹陰活動', icon: 'fa-solid fa-cloud-sun text-amber-500' },
@@ -391,6 +521,7 @@
           },
           {
             weekDay: 'Fri', dateNum: '14', fullDate: '2026/08/14', theme: '白色戀人公園 + 小樽運河漫遊',
+            noticeKey: 'obon',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
             babyScore: '🍼 3.8 / 5 (小樽建議備背巾)',
             weather: { region: '小樽沿海', condition: '23-27℃ 海風較明顯', temp: '23-27°C', advice: '備輕外套防風', icon: 'fa-solid fa-wind text-slate-400' },
@@ -405,17 +536,18 @@
           },
           {
             weekDay: 'Sat', dateNum: '15', fullDate: '2026/08/15', theme: '富良野花田 + 晚餐彈性 Plan B',
+            noticeKey: 'obon',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
             babyScore: '🍼 3.5 / 5 (花田好推 • 晚餐選 Plan B)',
             weather: { region: '富良野花田', condition: '24-30℃ 曝曬強', temp: '24-30°C', advice: '遮陽帽、防曬必備', icon: 'fa-solid fa-sun text-amber-500' },
             babyTip: '拉麵排隊長且空間狹窄，遇排隊請秒切換 Plan B GARAKU！',
             items: [
-              { id: '4-1', category: '美食', title: 'Furanoya 湯咖哩', time: '08:00 出發', hours: '11:00 起', ticket: '約 ¥1,200', rating: '3.65', notes: '富良野野菜湯咖哩。🅿️ 有車位，設一般桌席。', navQuery: 'Furanoya 富良野', transportType: 'car', travelTime: '2 小時', babyFriendly: '🛒 桌席可放推車' },
+              { id: '4-1', category: '美食', title: 'Furanoya 湯咖哩', noticeKey: 'carseat', time: '08:00 出發', hours: '11:00 起', ticket: '約 ¥1,200', rating: '3.65', notes: '富良野野菜湯咖哩。🅿️ 有車位，設一般桌席。', navQuery: 'Furanoya 富良野', transportType: 'car', travelTime: '2 小時', babyFriendly: '🛒 桌席可放推車' },
               { id: '4-2', category: '景點', title: '富良野起司工房', time: '12:00-13:00', hours: '09:00-17:00', ticket: '免費', notes: '室內冷氣足、木地板平坦，設乾淨尿布台。', navQuery: '富良野起司工房', transportType: 'car', travelTime: '15 分鐘', babyFriendly: '🍼 冷氣足、設尿布台' },
-              { id: '4-3', category: '景點', title: '富田農場 + 哈密瓜農場', time: '13:20-15:20', hours: '08:30-17:00', ticket: '免費', notes: '🅿️ 停車免費。花田主要步道均可推車。', navQuery: '富田農場', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🛒 主步道平坦好推車' },
+              { id: '4-3', category: '景點', title: '富田農場 + 哈密瓜農場', noticeKey: 'obon', time: '13:20-15:20', hours: '08:30-17:00', ticket: '免費', notes: '🅿️ 停車免費。花田主要步道均可推車。', navQuery: '富田農場', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🛒 主步道平坦好推車' },
               { id: '4-4', category: '美食', title: 'Popura Farm Café', time: '15:30-16:30', hours: '至 17:00', ticket: '約 ¥1,400', rating: '3.48', notes: '哈密瓜霜淇淋。戶內外均有寬敞座位。', navQuery: 'Popura Farm Café', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🍼 空間大好停車' },
               { 
-                id: '4-5', category: '美食', title: '一幻拉麵 總本店 (原訂點)', time: '18:30-19:30', hours: '11:00 - 03:00', ticket: '約 ¥1,000', rating: '3.76', 
+                id: '4-5', category: '美食', title: '一幻拉麵 總本店 (原訂點)', noticeKey: 'obon', time: '18:30-19:30', hours: '11:00 - 03:00', ticket: '約 ¥1,000', rating: '3.76', 
                 babyFriendly: '⚠️ 吧檯為主/排隊 45m+',
                 notes: '甜蝦濃郁拉麵。若排隊過長或寶寶燥動，建議執行 Plan B！', 
                 navQuery: '蝦味拉麵一幻 總本店', transportType: 'car', travelTime: '2 小時',
@@ -432,6 +564,7 @@
           },
           {
             weekDay: 'Sun', dateNum: '16', fullDate: '2026/08/16', theme: '支笏湖放鬆 + 燒肉 Plan B 雙保險',
+            noticeKey: 'obon',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
             babyScore: '🍼 3.9 / 5 (湖畔舒適 • 燒肉選 Plan B)',
             weather: { region: '支笏湖', condition: '21-26℃ 湖風較涼', temp: '21-26°C', advice: '攜帶薄外套與小毯', icon: 'fa-solid fa-cloud-sun text-slate-400' },
@@ -441,7 +574,7 @@
               { id: '5-2', category: '美食', title: '食事処 支笏莊', time: '11:30-12:30', ticket: '約 ¥1,800', rating: '3.25', notes: '姬鱒定食。內有一般桌席，空間舒適。', navQuery: '食事処 支笏莊', transportType: 'walk', travelTime: '5 分鐘', babyFriendly: '🛒 桌席可放推車' },
               { id: '5-3', category: '景點', title: '湖畔咖啡散步 / 15:00 返程', time: '12:30-15:00', ticket: '', notes: '不趕行程，讓寶寶在湖邊涼爽處午睡。', navQuery: '支笏湖', transportType: 'car', travelTime: '1 小時', babyFriendly: '🛒 湖畔推車散步放鬆' },
               { 
-                id: '5-4', category: '美食', title: '成吉思汗達摩 本店 (原訂點)', time: '17:30-19:00', hours: '17:00 起', ticket: '約 ¥3,000', rating: '3.70', 
+                id: '5-4', category: '美食', title: '成吉思汗達摩 本店 (原訂點)', noticeKey: 'obon', time: '17:30-19:00', hours: '17:00 起', ticket: '約 ¥3,000', rating: '3.70', 
                 babyFriendly: '⚠️ 吧檯狹窄/油煙較重',
                 notes: '札幌燒肉代表。因吧檯窄排隊長，建議轉往 Plan B！', 
                 navQuery: '成吉思汗 達摩 本店', transportType: 'car', travelTime: '15 分鐘',
@@ -565,6 +698,7 @@
         return {
           activeTab, days, currentDayIndex, currentDay, categoryFilter, filteredItinerary,
           jpyInput, jpyRate, showItineraryModal, isEditing, formItinerary,
+          notices, showNoticeModal, currentNotice, openNotice,
           openGoogleNav, getCategoryBadge, getTransportIcon,
           openAddModal, editItinerary, saveItinerary, confirmDeleteItinerary
         };

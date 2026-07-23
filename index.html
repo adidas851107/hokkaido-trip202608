@@ -314,7 +314,7 @@
       </section>
 
       <!-- ========================================== -->
-      <!-- 分頁二：資訊 (i) - 全新美化排版專區 -->
+      <!-- 分頁二：資訊 (i) -->
       <!-- ========================================== -->
       <section v-if="activeTab === 'info'" class="space-y-3.5 pb-8">
         
@@ -350,18 +350,6 @@
               <button @click="openGoogleNav('札幌市急病診療所')" class="bg-stone-700 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-xl shrink-0">
                 地圖
               </button>
-            </div>
-
-            <!-- 保單號碼卡片 -->
-            <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-200/80 space-y-1.5">
-              <div class="text-xs font-extrabold text-stone-800 flex items-center justify-between">
-                <span>📝 旅平險 & 海外不便險速記</span>
-                <span class="text-[9px] text-stone-400">自動儲存</span>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <input type="text" v-model="insuranceInfo.provider" placeholder="保險公司 (如: 富邦)" class="bg-white text-[11px] p-1.5 rounded-lg border border-stone-200 font-bold outline-none">
-                <input type="text" v-model="insuranceInfo.policyNo" placeholder="保單號碼" class="bg-white text-[11px] p-1.5 rounded-lg border border-stone-200 font-bold outline-none">
-              </div>
             </div>
           </div>
         </div>
@@ -399,31 +387,7 @@
           </div>
         </div>
 
-        <!-- 3. 🎒 每日出門育兒 CheckList -->
-        <div class="bg-white rounded-2xl p-3.5 shadow-2xs border border-stone-200/80 space-y-2.5">
-          <div class="flex justify-between items-center">
-            <h2 class="text-xs font-extrabold text-stone-800 uppercase tracking-wider flex items-center gap-1.5">
-              <i class="fa-solid fa-list-check text-[#8A9A86] text-sm"></i> 出發 & 每日出門 CheckList
-            </h2>
-            <span class="text-[10px] font-bold text-stone-400">{{ checkedCount }}/{{ checklist.length }} 完成</span>
-          </div>
-
-          <div class="space-y-1.5">
-            <div 
-              v-for="(item, i) in checklist" 
-              :key="i"
-              @click="item.checked = !item.checked"
-              :class="['p-2 rounded-xl border text-xs font-bold flex items-center justify-between cursor-pointer transition-all', item.checked ? 'bg-stone-100 text-stone-400 border-stone-200 line-through' : 'bg-stone-50 text-stone-700 border-stone-200/80']"
-            >
-              <div class="flex items-center gap-2">
-                <i :class="['fa-regular text-sm', item.checked ? 'fa-square-check text-[#8A9A86]' : 'fa-square text-stone-300']"></i>
-                <span>{{ item.text }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. 💰 匯率試算 -->
+        <!-- 3. 💰 匯率試算 -->
         <div class="bg-white rounded-2xl p-3.5 shadow-2xs border border-stone-200/80 space-y-2">
           <h2 class="text-xs font-extrabold text-stone-800 uppercase tracking-wider flex items-center gap-1.5">
             <i class="fa-solid fa-calculator text-[#8D7B93] text-sm"></i> 匯率試算 (JPY ➔ TWD)
@@ -442,7 +406,7 @@
           </div>
         </div>
 
-        <!-- 5. 🏨 住宿與租車資訊 -->
+        <!-- 4. 🏨 住宿與租車資訊 -->
         <div class="bg-white rounded-2xl p-3.5 shadow-2xs border border-stone-200/80 space-y-2.5">
           <h2 class="text-xs font-extrabold text-stone-800 uppercase tracking-wider flex items-center gap-1.5">
             <i class="fa-solid fa-hotel text-[#8D7B93] text-sm"></i> 住宿飯店 (全程連住)
@@ -656,15 +620,6 @@
       }
     ];
 
-    const DEFAULT_CHECKLIST = [
-      { text: '奶粉分裝包 / 消毒錠 / 溫奶器', checked: false },
-      { text: '尿布 / 濕紙巾 / 屁屁膏', checked: false },
-      { text: '寶寶常備藥 / 體溫計 / 餵藥器', checked: false },
-      { text: '折疊推車 / 輕便背巾 / 推車雨罩', checked: false },
-      { text: '寶寶薄外套 / 防曬帽 / 遮陽罩', checked: false },
-      { text: '護照 / 國際駕照 / 護照影本卡', checked: false }
-    ];
-
     createApp({
       setup() {
         const activeTab = ref('itinerary');
@@ -680,18 +635,8 @@
         const savedDays = localStorage.getItem('hkd_days');
         const days = ref(savedDays ? JSON.parse(savedDays) : DEFAULT_DAYS);
 
-        const savedChecklist = localStorage.getItem('hkd_checklist');
-        const checklist = ref(savedChecklist ? JSON.parse(savedChecklist) : DEFAULT_CHECKLIST);
-
-        const savedInsurance = localStorage.getItem('hkd_insurance');
-        const insuranceInfo = ref(savedInsurance ? JSON.parse(savedInsurance) : { provider: '', policyNo: '' });
-
         // 自動監聽寫入 LocalStorage
         watch(days, (val) => localStorage.setItem('hkd_days', JSON.stringify(val)), { deep: true });
-        watch(checklist, (val) => localStorage.setItem('hkd_checklist', JSON.stringify(val)), { deep: true });
-        watch(insuranceInfo, (val) => localStorage.setItem('hkd_insurance', JSON.stringify(val)), { deep: true });
-
-        const checkedCount = computed(() => checklist.value.filter(i => i.checked).length);
 
         // 複製文字與提示小工具
         const copyText = (text, label = '內容') => {
@@ -711,7 +656,7 @@
           setTimeout(() => { showToast.value = false; }, 2000);
         };
 
-        // 5 大注意事項資料集
+        // 注意事項資料集
         const notices = ref({
           obon: {
             icon: 'fa-solid fa-car-burst',
@@ -818,13 +763,9 @@
         };
 
         const resetToDefaultData = () => {
-          if (confirm('確定要將所有行程與清單恢復為預設初始設定嗎？')) {
+          if (confirm('確定要將所有行程恢復為預設初始設定嗎？')) {
             localStorage.removeItem('hkd_days');
-            localStorage.removeItem('hkd_checklist');
-            localStorage.removeItem('hkd_insurance');
             days.value = JSON.parse(JSON.stringify(DEFAULT_DAYS));
-            checklist.value = JSON.parse(JSON.stringify(DEFAULT_CHECKLIST));
-            insuranceInfo.value = { provider: '', policyNo: '' };
             toastMsg.value = '已重置為初始手冊資料！';
             showToast.value = true;
             setTimeout(() => { showToast.value = false; }, 2000);
@@ -852,7 +793,7 @@
           activeTab, days, currentDayIndex, currentDay, categoryFilter, filteredItinerary,
           jpyInput, jpyRate, showItineraryModal, isEditing, formItinerary,
           notices, showNoticeModal, currentNotice, openNotice,
-          showToast, toastMsg, copyText, checklist, checkedCount, insuranceInfo, resetToDefaultData,
+          showToast, toastMsg, copyText, resetToDefaultData,
           openGoogleNav, getCategoryBadge, getTransportIcon,
           openAddModal, editItinerary, saveItinerary, confirmDeleteItinerary
         };

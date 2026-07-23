@@ -75,7 +75,7 @@
         <h1 class="text-lg font-extrabold mt-1 tracking-tight">北海道親子 7 天 6 夜慢遊</h1>
       </div>
 
-      <!-- 浮動分頁導覽按鈕 (已移除花費頁籤) -->
+      <!-- 浮動分頁導覽按鈕 -->
       <nav class="absolute bottom-5 right-3 flex items-center bg-white/90 backdrop-blur-md rounded-full p-1.5 shadow-sm border border-stone-200/80 z-20">
         <button 
           @click="activeTab = 'itinerary'" 
@@ -252,7 +252,7 @@
             <!-- 一般行程卡片 -->
             <div v-else class="bg-white rounded-2xl p-3.5 shadow-2xs border border-stone-200/80 hover:shadow-xs transition-all flex flex-col justify-between">
               <div class="flex items-center justify-between gap-2">
-                <!-- 左側：拖曳圖示 + 橫向單行標籤 + 標題 -->
+                <!-- 左側：拖曳圖示 + 標籤 + 標題 -->
                 <div class="flex items-center gap-2 min-w-0 flex-1">
                   <span class="cursor-grab text-stone-300 hover:text-stone-500 drag-handle p-1 shrink-0"><i class="fa-solid fa-grip-vertical"></i></span>
                   
@@ -364,6 +364,14 @@
           </div>
         </div>
 
+        <!-- 快取管理/資料重置 -->
+        <div class="bg-stone-200/50 rounded-2xl p-3.5 border border-stone-300/50 text-center space-y-1.5">
+          <div class="text-[11px] text-stone-500 font-bold">已開啟本機儲存（變更會自動保留於此手機）</div>
+          <button @click="resetToDefaultData" class="text-xs text-rose-600 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-xl font-bold border border-rose-200 transition-all">
+            <i class="fa-solid fa-rotate-left"></i> 重置為預設行程
+          </button>
+        </div>
+
       </section>
 
 
@@ -465,6 +473,102 @@
   <script>
     const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
 
+    const HOTEL_ADDRESS = '15-chõme-3-18 Minami 9';
+
+    const defaultDays = [
+      {
+        weekDay: 'Wed', dateNum: '12', fullDate: '2026/08/12', theme: '抵達札幌 + 狸小路採買',
+        startLocation: '新千歲機場 CTS',
+        weather: { region: '札幌', condition: '24-29℃ 日照舒適', temp: '24-29°C', advice: '短袖為主，備薄外套', icon: 'fa-solid fa-sun text-amber-500' },
+        babyTip: '機場先餵奶換尿布，領車後第一段車程盡量讓 Jessie 睡覺。',
+        items: [
+          { id: '1-1', category: '航班', title: '抵達新千歲機場 IT234', time: '11:05', ticket: '', notes: '領行李、換尿布、餵奶；不急著衝櫃檯。', navQuery: 'New Chitose Airport', transportType: 'car', travelTime: '45 分鐘' },
+          { id: '1-2', category: '其他', title: '領車與安裝安全座椅', time: '12:30-13:15', ticket: '', notes: '確認安全帶固定、導航語言與 ETC 卡。', navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '1 小時' },
+          { id: '1-3', category: '購物', title: '狸小路商店街', time: '約 14:30', hours: '各大商店營業中', ticket: '免費', notes: '停車後慢慢逛；先簡單用餐，買當晚與 Jessie 必需品。', navQuery: '狸小路商店街', transportType: 'car', travelTime: '15 分鐘' },
+          { id: '1-4', category: '住宿', title: '辦理入住 La manana', time: '約 17:00', ticket: '', notes: `入住地點：${HOTEL_ADDRESS}。Jessie 洗澡餵奶，第一天不加景點。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '' }
+        ]
+      },
+      {
+        weekDay: 'Thu', dateNum: '13', fullDate: '2026/08/13', theme: '札幌市區慢遊 + 晚間電視塔',
+        startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+        weather: { region: '札幌市區', condition: '24-29℃ 溫和快適', temp: '24-29°C', advice: '大通公園樹陰處活動', icon: 'fa-solid fa-cloud-sun text-amber-500' },
+        babyTip: '下午刻意留在住宿處休息，確保寶寶午睡。電視塔建議 19:00 登塔，勿拖過晚。',
+        items: [
+          { id: '2-1', category: '景點', title: '大通公園散步 (由住宿出發)', time: '09:00', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 12 分鐘。散步讓 Jessie 在陰影處活動。`, navQuery: '大通公園', transportType: 'car', travelTime: '12 分鐘' },
+          { id: '2-2', category: '美食', title: '蝦味拉麵一幻 總本店', time: '11:00 前後', hours: '11:00 起', ticket: '約 ¥1,000', notes: '招牌蝦味噌/蝦鹽，座位較狹窄，建議大人先確認座位。', navQuery: '蝦味拉麵一幻 總本店', transportType: 'car', travelTime: '15 分鐘' },
+          { id: '2-3', category: '其他', title: '回住宿休息 / 自由活動', time: '13:00-17:30', ticket: '', notes: `返回住宿點 (${HOTEL_ADDRESS})，完整保留寶寶午睡、餵奶與大人休息時間。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '12 分鐘' },
+          { id: '2-4', category: '景點', title: '大通公園晚間散步 & 電視塔夜景', time: '18:30-20:00', hours: '至 22:00', ticket: '¥1,000', notes: '看亮燈電視塔，登展望台看夜景。', navQuery: '札幌電視塔', transportType: 'walk', travelTime: '10 分鐘' }
+        ]
+      },
+      {
+        weekDay: 'Fri', dateNum: '14', fullDate: '2026/08/14', theme: '白色戀人公園 + 小樽運河漫遊',
+        startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+        weather: { region: '小樽沿海', condition: '23-27℃ 海風較明顯', temp: '23-27°C', advice: '攜帶薄襯衫或輕外套', icon: 'fa-solid fa-wind text-slate-400' },
+        babyTip: '小樽石板路較顛簸，建議推車與背巾皆隨身攜帶。',
+        items: [
+          { id: '3-1', category: '景點', title: '白色戀人公園 (由住宿出發)', time: '08:30 出發', hours: '10:00-18:00', ticket: '庭園免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發前往。歐式庭園拍照、吃白色戀人霜淇淋。`, navQuery: '白色戀人公園', transportType: 'car', travelTime: '20 分鐘' },
+          { id: '3-2', category: '美食', title: '若雞時代なると本店', time: '12:00-13:00', hours: '11:00 起', ticket: '約 ¥1,500', notes: '半身炸雞與壽司，份量大建議分食。熱門需候位。', navQuery: '若雞時代なると本店', transportType: 'walk', travelTime: '10 分鐘' },
+          { id: '3-3', category: '景點', title: '小樽運河 + 堺町通商店街', time: '13:00-16:30', hours: '依店家', ticket: '免費', notes: '停一次車全程徒步。北一硝子、音樂盒堂、LeTAO 甜點。', navQuery: '小樽運河', transportType: 'walk', travelTime: '5 分鐘' },
+          { id: '3-4', category: '景點', title: '出拔小路 & 開車返回住宿', time: '16:30-17:30', ticket: '', notes: `出拔小路拍照後返回住宿點 (${HOTEL_ADDRESS})，寶寶上車前先換尿布餵奶。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '50 分鐘' }
+        ]
+      },
+      {
+        weekDay: 'Sat', dateNum: '15', fullDate: '2026/08/15', theme: '富良野花田、Popura甜點與場外市場海鮮',
+        startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+        weather: { region: '富良野花田', condition: '24-30℃ 花田曝曬強', temp: '24-30°C', advice: '遮陽帽、防曬、透氣長褲', icon: 'fa-solid fa-sun text-amber-500' },
+        babyTip: '長途車程至少停一次休息站。Popura Farm 位於中富良野，距富田農場僅 10 分鐘車程！',
+        items: [
+          { id: '4-1', category: '美食', title: 'Furanoya 湯咖哩 (由住宿出發)', time: '08:00 出發', hours: '11:00 起', ticket: '約 ¥1,200', notes: `由住宿點 (${HOTEL_ADDRESS}) 開車前往富良野，約 2 小時。富良野蔬菜湯咖哩。`, navQuery: 'Furanoya 富良野', transportType: 'car', travelTime: '2 小時' },
+          { id: '4-2', category: '景點', title: '富良野起司工房', time: '12:00-13:00', hours: '09:00-17:00', ticket: '免費', notes: '室內參觀、買起司與牛奶，炎熱時的優質休息點。', navQuery: '富良野起司工房', transportType: 'car', travelTime: '15 分鐘' },
+          { id: '4-3', category: '景點', title: '富田農場 + 富田哈密瓜農場', time: '13:20-15:20', hours: '08:30-17:00', ticket: '免費', notes: '兩處相鄰停一次車：當季花田散步、哈密瓜霜淇淋。', navQuery: '富田農場', transportType: 'car', travelTime: '10 分鐘' },
+          { id: '4-4', category: '美食', title: 'Popura Farm Café', time: '15:30-16:30', hours: '至 17:00', ticket: '約 ¥1,400', notes: '距離富田農場僅約 10 分鐘！品嚐 Santa no Hige 哈密瓜霜淇淋，為返程作準備。', navQuery: 'Popura Farm Café', transportType: 'car', travelTime: '10 分鐘' },
+          { id: '4-5', category: '美食', title: '札幌場外市場海鮮晚餐', time: '18:30-20:00', hours: '晚間專營海鮮餐廳', ticket: '約 ¥3,500', notes: '回札幌長途車程約 2 小時，直達場外市場享用新鮮海鮮丼與帝王蟹美食！後返回住宿。', navQuery: '札幌場外市場', transportType: 'car', travelTime: '2 小時' }
+        ]
+      },
+      {
+        weekDay: 'Sun', dateNum: '16', fullDate: '2026/08/16', theme: '支笏湖放鬆日 + 晚間成吉思汗烤肉',
+        startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+        weather: { region: '支笏湖', condition: '21-26℃ 湖邊風較涼', temp: '21-26°C', advice: '必備防風薄外套與寶寶薄毯', icon: 'fa-solid fa-cloud-sun text-slate-400' },
+        babyTip: '湖邊風強，若 Jessie 在睡覺留在岸邊最舒服，不必強求搭船。',
+        items: [
+          { id: '5-1', category: '景點', title: '支笏湖遊客中心 (由住宿出發)', time: '08:30 出發', hours: '09:00-17:30', ticket: '停車費約 ¥1,000', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，約 1 小時 15 分鐘車程。湖岸與溫泉街徒步。`, navQuery: '支笏湖遊客中心', transportType: 'car', travelTime: '1 小時 15 分' },
+          { id: '5-2', category: '美食', title: '食事処 支笏莊 / 湖畔餐廳', time: '11:30-12:30', ticket: '約 ¥1,800', notes: '品嚐姬鱒定食或簡單日式餐點。', navQuery: '食事処 支笏莊', transportType: 'walk', travelTime: '5 分鐘' },
+          { id: '5-3', category: '景點', title: '湖畔咖啡館休息 / 15:00 返札幌', time: '12:30-15:00', ticket: '', notes: '不趕景點，讓 Jessie 舒適午睡；15:00 避開山路晚高峰返札幌。', navQuery: '支笏湖', transportType: 'car', travelTime: '1 小時' },
+          { id: '5-4', category: '美食', title: '成吉思汗達摩 (烤羊肉晚餐)', time: '17:30-19:00', hours: '17:00 起', ticket: '約 ¥3,000', notes: '回札幌後晚餐。油煙較重，建議選擇較寬敞分店或提早抵達。', navQuery: '成吉思汗 達摩 本店', transportType: 'car', travelTime: '15 分鐘' }
+        ]
+      },
+      {
+        weekDay: 'Mon', dateNum: '17', fullDate: '2026/08/17', theme: '札幌購物日 (Ario & 根室花丸)',
+        startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+        weather: { region: '札幌市區', condition: '24-28℃ 室內空調穩定', temp: '24-28°C', advice: '商場育嬰設施最齊全', icon: 'fa-solid fa-bag-shopping text-stone-400' },
+        babyTip: '今日育嬰設備最完整，方便安排規律餵奶與午睡。',
+        items: [
+          { id: '6-1', category: '購物', title: 'Ario 札幌購物中心 (由住宿出發)', time: '09:45 出發', hours: '10:00 起', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 15 分鐘。採購阿卡將育嬰用品。`, navQuery: 'Ario 札幌', transportType: 'car', travelTime: '15 分鐘' },
+          { id: '6-2', category: '美食', title: '根室花丸 JR Tower 店', time: '13:00-14:30', hours: '11:00 起', ticket: '依盤計費', notes: '先抽號碼牌後逛商場等候。必點花咲蟹鐵砲汁、鮭魚卵。', navQuery: '根室花丸 JR Tower Stellar Place', transportType: 'car', travelTime: '10 分鐘' },
+          { id: '6-3', category: '購物', title: 'Stellar Place / 大丸百貨購物', time: '14:30-16:30', ticket: '', notes: '與花丸同一區，集中購買伴手禮與服飾。', navQuery: 'Stellar Place 札幌', transportType: 'walk', travelTime: '5 分鐘' },
+          { id: '6-4', category: '購物', title: 'Super ARCS Yamahana 超市', time: '17:00-18:00', hours: '至 23:00', ticket: '', notes: `買哈密瓜、鮮奶與最後補貨，回住宿點 (${HOTEL_ADDRESS}) 打包。`, navQuery: 'Super ARCS Yamahana', transportType: 'car', travelTime: '10 分鐘' }
+        ]
+      },
+      {
+        weekDay: 'Tue', dateNum: '18', fullDate: '2026/08/18', theme: '新千歲機場巡禮 + 返台',
+        startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+        weather: { region: '新千歲機場', condition: '室內冷氣舒適', temp: '24°C', advice: '注意室內外溫差分層穿脫', icon: 'fa-solid fa-plane-departure text-stone-500' },
+        babyTip: '飛機起飛時餵奶或讓 Jessie 吸奶嘴協助吞嚥，可減少耳壓不適。',
+        items: [
+          { id: '7-1', category: '其他', title: '退房整理 & 出發前往加油還車', time: '11:30 出發', ticket: '', notes: `由住宿點 (${HOTEL_ADDRESS}) 退房出發前往加油站，12:45-13:30 還車搭接駁車至機場。`, navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '50 分鐘' },
+          { id: '7-2', category: '美食', title: '機場美食街 & 伴手禮巡禮', time: '13:30-16:00', ticket: '', notes: '拉麵道場、Kinotoya 起司塔、Royce、LeTAO、Calbee+。', navQuery: '新千歲機場 國內線航廈', transportType: 'walk', travelTime: '10 分鐘' },
+          { id: '7-3', category: '景點', title: '機場親子設施與咖啡休息', time: '16:00-17:00', ticket: '', notes: 'Royce Chocolate World, Doraemon Sky Park 散步。', navQuery: 'Royce Chocolate World', transportType: 'walk', travelTime: '10 分鐘' },
+          { id: '7-4', category: '航班', title: '辦理登機 TR893 返台', time: '17:00-19:10', ticket: '', notes: '安檢前完成換尿布餵奶。19:10 起飛返台。', navQuery: '新千歲機場 國際線航廈', transportType: '', travelTime: '' }
+        ]
+      }
+    ];
+
+    const defaultShoppingList = [
+      { id: '1', name: 'LeTAO 雙層起司蛋糕', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?q=80&w=300' },
+      { id: '2', name: '阿卡將 Jessie 寶寶用品', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=300' },
+      { id: '3', name: '六花亭 奶油葡萄餅乾', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=300' }
+    ];
+
     createApp({
       setup() {
         const activeTab = ref('itinerary');
@@ -473,107 +577,27 @@
         const jpyInput = ref(10000);
         const jpyRate = ref(0.21);
 
-        const HOTEL_ADDRESS = '15-chõme-3-18 Minami 9';
+        // 讀取 localStorage 資料，無資料則使用預設值
+        const savedDays = localStorage.getItem('hokkaido_days');
+        const days = ref(savedDays ? JSON.parse(savedDays) : defaultDays);
 
-        const days = ref([
-          {
-            weekDay: 'Wed', dateNum: '12', fullDate: '2026/08/12', theme: '抵達札幌 + 狸小路採買',
-            startLocation: '新千歲機場 CTS',
-            weather: { region: '札幌', condition: '24-29℃ 日照舒適', temp: '24-29°C', advice: '短袖為主，備薄外套', icon: 'fa-solid fa-sun text-amber-500' },
-            babyTip: '機場先餵奶換尿布，領車後第一段車程盡量讓 Jessie 睡覺。',
-            items: [
-              { id: '1-1', category: '航班', title: '抵達新千歲機場 IT234', time: '11:05', ticket: '', notes: '領行李、換尿布、餵奶；不急著衝櫃檯。', navQuery: 'New Chitose Airport', transportType: 'car', travelTime: '45 分鐘' },
-              { id: '1-2', category: '其他', title: '領車與安裝安全座椅', time: '12:30-13:15', ticket: '', notes: '確認安全帶固定、導航語言與 ETC 卡。', navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '1 小時' },
-              { id: '1-3', category: '購物', title: '狸小路商店街', time: '約 14:30', hours: '各大商店營業中', ticket: '免費', notes: '停車後慢慢逛；先簡單用餐，買當晚與 Jessie 必需品。', navQuery: '狸小路商店街', transportType: 'car', travelTime: '15 分鐘' },
-              { id: '1-4', category: '住宿', title: '辦理入住 La manana', time: '約 17:00', ticket: '', notes: `入住地點：${HOTEL_ADDRESS}。Jessie 洗澡餵奶，第一天不加景點。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '' }
-            ]
-          },
-          {
-            weekDay: 'Thu', dateNum: '13', fullDate: '2026/08/13', theme: '札幌市區慢遊 + 晚間電視塔',
-            startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '札幌市區', condition: '24-29℃ 溫和快適', temp: '24-29°C', advice: '大通公園樹陰處活動', icon: 'fa-solid fa-cloud-sun text-amber-500' },
-            babyTip: '下午刻意留在住宿處休息，確保寶寶午睡。電視塔建議 19:00 登塔，勿拖過晚。',
-            items: [
-              { id: '2-1', category: '景點', title: '大通公園散步 (由住宿出發)', time: '09:00', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 12 分鐘。散步讓 Jessie 在陰影處活動。`, navQuery: '大通公園', transportType: 'car', travelTime: '12 分鐘' },
-              { id: '2-2', category: '美食', title: '蝦味拉麵一幻 總本店', time: '11:00 前後', hours: '11:00 起', ticket: '約 ¥1,000', notes: '招牌蝦味噌/蝦鹽，座位較狹窄，建議大人先確認座位。', navQuery: '蝦味拉麵一幻 總本店', transportType: 'car', travelTime: '15 分鐘' },
-              { id: '2-3', category: '其他', title: '回住宿休息 / 自由活動', time: '13:00-17:30', ticket: '', notes: `返回住宿點 (${HOTEL_ADDRESS})，完整保留寶寶午睡、餵奶與大人休息時間。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '12 分鐘' },
-              { id: '2-4', category: '景點', title: '大通公園晚間散步 & 電視塔夜景', time: '18:30-20:00', hours: '至 22:00', ticket: '¥1,000', notes: '看亮燈電視塔，登展望台看夜景。', navQuery: '札幌電視塔', transportType: 'walk', travelTime: '10 分鐘' }
-            ]
-          },
-          {
-            weekDay: 'Fri', dateNum: '14', fullDate: '2026/08/14', theme: '白色戀人公園 + 小樽運河漫遊',
-            startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '小樽沿海', condition: '23-27℃ 海風較明顯', temp: '23-27°C', advice: '攜帶薄襯衫或輕外套', icon: 'fa-solid fa-wind text-slate-400' },
-            babyTip: '小樽石板路較顛簸，建議推車與背巾皆隨身攜帶。',
-            items: [
-              { id: '3-1', category: '景點', title: '白色戀人公園 (由住宿出發)', time: '08:30 出發', hours: '10:00-18:00', ticket: '庭園免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發前往。歐式庭園拍照、吃白色戀人霜淇淋。`, navQuery: '白色戀人公園', transportType: 'car', travelTime: '20 分鐘' },
-              { id: '3-2', category: '美食', title: '若雞時代なると本店', time: '12:00-13:00', hours: '11:00 起', ticket: '約 ¥1,500', notes: '半身炸雞與壽司，份量大建議分食。熱門需候位。', navQuery: '若雞時代なると本店', transportType: 'walk', travelTime: '10 分鐘' },
-              { id: '3-3', category: '景點', title: '小樽運河 + 堺町通商店街', time: '13:00-16:30', hours: '依店家', ticket: '免費', notes: '停一次車全程徒步。北一硝子、音樂盒堂、LeTAO 甜點。', navQuery: '小樽運河', transportType: 'walk', travelTime: '5 分鐘' },
-              { id: '3-4', category: '景點', title: '出拔小路 & 開車返回住宿', time: '16:30-17:30', ticket: '', notes: `出拔小路拍照後返回住宿點 (${HOTEL_ADDRESS})，寶寶上車前先換尿布餵奶。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '50 分鐘' }
-            ]
-          },
-          {
-            weekDay: 'Sat', dateNum: '15', fullDate: '2026/08/15', theme: '富良野花田、Popura甜點與場外市場海鮮',
-            startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '富良野花田', condition: '24-30℃ 花田曝曬強', temp: '24-30°C', advice: '遮陽帽、防曬、透氣長褲', icon: 'fa-solid fa-sun text-amber-500' },
-            babyTip: '長途車程至少停一次休息站。Popura Farm 位於中富良野，距富田農場僅 10 分鐘車程！',
-            items: [
-              { id: '4-1', category: '美食', title: 'Furanoya 湯咖哩 (由住宿出發)', time: '08:00 出發', hours: '11:00 起', ticket: '約 ¥1,200', notes: `由住宿點 (${HOTEL_ADDRESS}) 開車前往富良野，約 2 小時。富良野蔬菜湯咖哩。`, navQuery: 'Furanoya 富良野', transportType: 'car', travelTime: '2 小時' },
-              { id: '4-2', category: '景點', title: '富良野起司工房', time: '12:00-13:00', hours: '09:00-17:00', ticket: '免費', notes: '室內參觀、買起司與牛奶，炎熱時的優質休息點。', navQuery: '富良野起司工房', transportType: 'car', travelTime: '15 分鐘' },
-              { id: '4-3', category: '景點', title: '富田農場 + 富田哈密瓜農場', time: '13:20-15:20', hours: '08:30-17:00', ticket: '免費', notes: '兩處相鄰停一次車：當季花田散步、哈密瓜霜淇淋。', navQuery: '富田農場', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '4-4', category: '美食', title: 'Popura Farm Café', time: '15:30-16:30', hours: '至 17:00', ticket: '約 ¥1,400', notes: '距離富田農場僅約 10 分鐘！品嚐 Santa no Hige 哈密瓜霜淇淋，為返程作準備。', navQuery: 'Popura Farm Café', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '4-5', category: '美食', title: '札幌場外市場海鮮晚餐', time: '18:30-20:00', hours: '晚間專營海鮮餐廳', ticket: '約 ¥3,500', notes: '回札幌長途車程約 2 小時，直達場外市場享用新鮮海鮮丼與帝王蟹美食！後返回住宿。', navQuery: '札幌場外市場', transportType: 'car', travelTime: '2 小時' }
-            ]
-          },
-          {
-            weekDay: 'Sun', dateNum: '16', fullDate: '2026/08/16', theme: '支笏湖放鬆日 + 晚間成吉思汗烤肉',
-            startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '支笏湖', condition: '21-26℃ 湖邊風較涼', temp: '21-26°C', advice: '必備防風薄外套與寶寶薄毯', icon: 'fa-solid fa-cloud-sun text-slate-400' },
-            babyTip: '湖邊風強，若 Jessie 在睡覺留在岸邊最舒服，不必強求搭船。',
-            items: [
-              { id: '5-1', category: '景點', title: '支笏湖遊客中心 (由住宿出發)', time: '08:30 出發', hours: '09:00-17:30', ticket: '停車費約 ¥1,000', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，約 1 小時 15 分鐘車程。湖岸與溫泉街徒步。`, navQuery: '支笏湖遊客中心', transportType: 'car', travelTime: '1 小時 15 分' },
-              { id: '5-2', category: '美食', title: '食事処 支笏莊 / 湖畔餐廳', time: '11:30-12:30', ticket: '約 ¥1,800', notes: '品嚐姬鱒定食或簡單日式餐點。', navQuery: '食事処 支笏莊', transportType: 'walk', travelTime: '5 分鐘' },
-              { id: '5-3', category: '景點', title: '湖畔咖啡館休息 / 15:00 返札幌', time: '12:30-15:00', ticket: '', notes: '不趕景點，讓 Jessie 舒適午睡；15:00 避開山路晚高峰返札幌。', navQuery: '支笏湖', transportType: 'car', travelTime: '1 小時' },
-              { id: '5-4', category: '美食', title: '成吉思汗達摩 (烤羊肉晚餐)', time: '17:30-19:00', hours: '17:00 起', ticket: '約 ¥3,000', notes: '回札幌後晚餐。油煙較重，建議選擇較寬敞分店或提早抵達。', navQuery: '成吉思汗 達摩 本店', transportType: 'car', travelTime: '15 分鐘' }
-            ]
-          },
-          {
-            weekDay: 'Mon', dateNum: '17', fullDate: '2026/08/17', theme: '札幌購物日 (Ario & 根室花丸)',
-            startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '札幌市區', condition: '24-28℃ 室內空調穩定', temp: '24-28°C', advice: '商場育嬰設施最齊全', icon: 'fa-solid fa-bag-shopping text-stone-400' },
-            babyTip: '今日育嬰設備最完整，方便安排規律餵奶與午睡。',
-            items: [
-              { id: '6-1', category: '購物', title: 'Ario 札幌購物中心 (由住宿出發)', time: '09:45 出發', hours: '10:00 起', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 15 分鐘。採購阿卡將育嬰用品。`, navQuery: 'Ario 札幌', transportType: 'car', travelTime: '15 分鐘' },
-              { id: '6-2', category: '美食', title: '根室花丸 JR Tower 店', time: '13:00-14:30', hours: '11:00 起', ticket: '依盤計費', notes: '先抽號碼牌後逛商場等候。必點花咲蟹鐵砲汁、鮭魚卵。', navQuery: '根室花丸 JR Tower Stellar Place', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '6-3', category: '購物', title: 'Stellar Place / 大丸百貨購物', time: '14:30-16:30', ticket: '', notes: '與花丸同一區，集中購買伴手禮與服飾。', navQuery: 'Stellar Place 札幌', transportType: 'walk', travelTime: '5 分鐘' },
-              { id: '6-4', category: '購物', title: 'Super ARCS Yamahana 超市', time: '17:00-18:00', hours: '至 23:00', ticket: '', notes: `買哈密瓜、鮮奶與最後補貨，回住宿點 (${HOTEL_ADDRESS}) 打包。`, navQuery: 'Super ARCS Yamahana', transportType: 'car', travelTime: '10 分鐘' }
-            ]
-          },
-          {
-            weekDay: 'Tue', dateNum: '18', fullDate: '2026/08/18', theme: '新千歲機場巡禮 + 返台',
-            startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
-            weather: { region: '新千歲機場', condition: '室內冷氣舒適', temp: '24°C', advice: '注意室內外溫差分層穿脫', icon: 'fa-solid fa-plane-departure text-stone-500' },
-            babyTip: '飛機起飛時餵奶或讓 Jessie 吸奶嘴協助吞嚥，可減少耳壓不適。',
-            items: [
-              { id: '7-1', category: '其他', title: '退房整理 & 出發前往加油還車', time: '11:30 出發', ticket: '', notes: `由住宿點 (${HOTEL_ADDRESS}) 退房出發前往加油站，12:45-13:30 還車搭接駁車至機場。`, navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '50 分鐘' },
-              { id: '7-2', category: '美食', title: '機場美食街 & 伴手禮巡禮', time: '13:30-16:00', ticket: '', notes: '拉麵道場、Kinotoya 起司塔、Royce、LeTAO、Calbee+。', navQuery: '新千歲機場 國內線航廈', transportType: 'walk', travelTime: '10 分鐘' },
-              { id: '7-3', category: '景點', title: '機場親子設施與咖啡休息', time: '16:00-17:00', ticket: '', notes: 'Royce Chocolate World, Doraemon Sky Park 散步。', navQuery: 'Royce Chocolate World', transportType: 'walk', travelTime: '10 分鐘' },
-              { id: '7-4', category: '航班', title: '辦理登機 TR893 返台', time: '17:00-19:10', ticket: '', notes: '安檢前完成換尿布餵奶。19:10 起飛返台。', navQuery: '新千歲機場 國際線航廈', transportType: '', travelTime: '' }
-            ]
-          }
-        ]);
+        const savedShopping = localStorage.getItem('hokkaido_shopping');
+        const shoppingList = ref(savedShopping ? JSON.parse(savedShopping) : defaultShoppingList);
+
+        // 監聽並自動寫入 localStorage
+        watch(days, (newVal) => {
+          localStorage.setItem('hokkaido_days', JSON.stringify(newVal));
+        }, { deep: true });
+
+        watch(shoppingList, (newVal) => {
+          localStorage.setItem('hokkaido_shopping', JSON.stringify(newVal));
+        }, { deep: true });
 
         const currentDay = computed(() => days.value[currentDayIndex.value]);
         const filteredItinerary = computed(() => {
           if (categoryFilter.value === 'all') return currentDay.value.items;
           return currentDay.value.items.filter(i => i.category === categoryFilter.value);
         });
-
-        const shoppingList = ref([
-          { id: '1', name: 'LeTAO 雙層起司蛋糕', image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?q=80&w=300' },
-          { id: '2', name: '阿卡將 Jessie 寶寶用品', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=300' },
-          { id: '3', name: '六花亭 奶油葡萄餅乾', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=300' }
-        ]);
 
         const showItineraryModal = ref(false);
         const isEditing = ref(false);
@@ -656,6 +680,16 @@
           shoppingList.value = shoppingList.value.filter(s => s.id !== id);
         };
 
+        const resetToDefaultData = () => {
+          if (confirm('確定要重置為初始行程資料嗎？目前的修改將會被覆蓋。')) {
+            localStorage.removeItem('hokkaido_days');
+            localStorage.removeItem('hokkaido_shopping');
+            days.value = JSON.parse(JSON.stringify(defaultDays));
+            shoppingList.value = JSON.parse(JSON.stringify(defaultShoppingList));
+            alert('已成功重置！');
+          }
+        };
+
         const initSortable = () => {
           const el = document.getElementById('itinerary-list');
           if (el) {
@@ -684,7 +718,7 @@
           showItineraryModal, isEditing, formItinerary, showAddShoppingModal, newShoppingName,
           openGoogleNav, getCategoryBadge, getTransportIcon,
           openAddModal, editItinerary, saveItinerary, confirmDeleteItinerary,
-          handleImageUpload, addShoppingItem, deleteShoppingItem
+          handleImageUpload, addShoppingItem, deleteShoppingItem, resetToDefaultData
         };
       }
     }).mount('#app');

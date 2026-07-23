@@ -75,7 +75,7 @@
         <h1 class="text-lg font-extrabold mt-1 tracking-tight">北海道親子 7 天 6 夜慢遊</h1>
       </div>
 
-      <!-- 浮動分頁導覽按鈕 -->
+      <!-- 浮動分頁導覽按鈕 (已移除花費頁籤) -->
       <nav class="absolute bottom-5 right-3 flex items-center bg-white/90 backdrop-blur-md rounded-full p-1.5 shadow-sm border border-stone-200/80 z-20">
         <button 
           @click="activeTab = 'itinerary'" 
@@ -99,14 +99,6 @@
         >
           <i class="fa-solid fa-basket-shopping text-xs"></i>
           <span v-if="activeTab === 'shopping'">清單</span>
-        </button>
-
-        <button 
-          @click="activeTab = 'expenses'" 
-          :class="['px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5', activeTab === 'expenses' ? 'bg-[#8D7B93] text-white shadow-2xs' : 'text-stone-600 hover:text-stone-900']"
-        >
-          <i class="fa-solid fa-wallet text-xs"></i>
-          <span v-if="activeTab === 'expenses'">花費</span>
         </button>
       </nav>
     </header>
@@ -160,7 +152,7 @@
           </div>
         </div>
 
-        <!-- 每日天氣與穿搭卡片 (莫蘭迪色調) -->
+        <!-- 每日天氣與穿搭卡片 -->
         <div class="bg-[#8A9A86] text-white rounded-2xl p-3.5 shadow-2xs flex items-center justify-between">
           <div class="flex items-center gap-3">
             <i :class="['text-2xl opacity-90', currentDay.weather.icon]"></i>
@@ -257,14 +249,13 @@
               </div>
             </div>
 
-            <!-- 一般行程卡片 (優化分類標籤單行顯示) -->
+            <!-- 一般行程卡片 -->
             <div v-else class="bg-white rounded-2xl p-3.5 shadow-2xs border border-stone-200/80 hover:shadow-xs transition-all flex flex-col justify-between">
               <div class="flex items-center justify-between gap-2">
                 <!-- 左側：拖曳圖示 + 橫向單行標籤 + 標題 -->
                 <div class="flex items-center gap-2 min-w-0 flex-1">
                   <span class="cursor-grab text-stone-300 hover:text-stone-500 drag-handle p-1 shrink-0"><i class="fa-solid fa-grip-vertical"></i></span>
                   
-                  <!-- 分類標籤：加入 whitespace-nowrap 與 shrink-0 確保絕對單行不變形 -->
                   <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0 whitespace-nowrap', getCategoryBadge(item.category)]">
                     {{ item.category }}
                   </span>
@@ -399,40 +390,6 @@
         </button>
       </section>
 
-
-      <!-- ========================================== -->
-      <!-- 分頁四：花費記帳 -->
-      <!-- ========================================== -->
-      <section v-if="activeTab === 'expenses'" class="space-y-3.5">
-        <div class="bg-[#8D7B93] text-white rounded-2xl p-4 shadow-2xs text-center">
-          <span class="text-xs opacity-80 block">🪻 北海道旅行累積總花費</span>
-          <div class="text-2xl font-bold my-1">¥ {{ totalExpensesJPY.toLocaleString() }}</div>
-          <span class="text-xs bg-white/20 px-3 py-0.5 rounded-full inline-block mt-1">約 NT$ {{ (totalExpensesJPY * jpyRate).toFixed(0) }}</span>
-        </div>
-
-        <div class="space-y-2">
-          <div v-for="exp in expenseList" :key="exp.id" class="bg-white rounded-2xl p-3 shadow-2xs border border-stone-200/80 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-stone-100 text-stone-600 flex items-center justify-center font-bold text-sm">
-                {{ getExpenseIcon(exp.category) }}
-              </div>
-              <div>
-                <div class="font-bold text-stone-800 text-xs">{{ exp.name }}</div>
-                <div class="text-[10px] text-stone-400">{{ exp.date }} • {{ exp.paymentMethod }}</div>
-              </div>
-            </div>
-            <div class="text-right">
-              <div class="font-bold text-stone-800 text-sm">¥ {{ Number(exp.amount).toLocaleString() }}</div>
-              <button @click="deleteExpense(exp.id)" class="text-[10px] text-rose-400 hover:underline">刪除</button>
-            </div>
-          </div>
-        </div>
-
-        <button @click="showAddExpenseModal = true" class="fixed bottom-6 right-6 w-12 h-12 bg-[#8D7B93] text-white rounded-full shadow-lg flex items-center justify-center text-xl z-30">
-          <i class="fa-solid fa-plus"></i>
-        </button>
-      </section>
-
     </main>
 
 
@@ -497,32 +454,6 @@
         <div class="flex gap-2 pt-2">
           <button @click="showAddShoppingModal = false" class="flex-1 bg-stone-100 text-stone-600 font-bold py-2.5 rounded-xl text-xs">取消</button>
           <button @click="addShoppingItem" class="flex-1 bg-[#8D7B93] text-white font-bold py-2.5 rounded-xl text-xs">新增</button>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- 彈出視窗 Modal：新增花費 -->
-    <div v-if="showAddExpenseModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-xl space-y-3">
-        <h3 class="font-bold text-stone-800 text-base">新增花費記錄</h3>
-        <select v-model="newExpense.category" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs font-bold border border-stone-200">
-          <option value="飲食">飲食</option>
-          <option value="交通">交通</option>
-          <option value="住宿">住宿</option>
-          <option value="門票">門票</option>
-          <option value="購物">購物</option>
-          <option value="其他">其他</option>
-        </select>
-        <input type="text" v-model="newExpense.name" placeholder="項目名稱" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200">
-        <input type="number" v-model="newExpense.amount" placeholder="金額 (日幣 JPY)" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200">
-        <select v-model="newExpense.paymentMethod" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200">
-          <option value="現金">現金</option>
-          <option value="信用卡">信用卡</option>
-        </select>
-        <div class="flex gap-2 pt-2">
-          <button @click="showAddExpenseModal = false" class="flex-1 bg-stone-100 text-stone-600 font-bold py-2.5 rounded-xl text-xs">取消</button>
-          <button @click="addExpense" class="flex-1 bg-[#8D7B93] text-white font-bold py-2.5 rounded-xl text-xs">儲存花費</button>
         </div>
       </div>
     </div>
@@ -614,7 +545,7 @@
             items: [
               { id: '6-1', category: '購物', title: 'Ario 札幌購物中心 (由住宿出發)', time: '09:45 出發', hours: '10:00 起', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 15 分鐘。採購阿卡將育嬰用品。`, navQuery: 'Ario 札幌', transportType: 'car', travelTime: '15 分鐘' },
               { id: '6-2', category: '美食', title: '根室花丸 JR Tower 店', time: '13:00-14:30', hours: '11:00 起', ticket: '依盤計費', notes: '先抽號碼牌後逛商場等候。必點花咲蟹鐵砲汁、鮭魚卵。', navQuery: '根室花丸 JR Tower Stellar Place', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '6-3', category: '購物', title: 'Stellar Place / 大丸百貨購物', time: '14:30-16:30', ticketガイド='', notes: '與花丸同一區，集中購買伴手禮與服飾。', navQuery: 'Stellar Place 札幌', transportType: 'walk', travelTime: '5 分鐘' },
+              { id: '6-3', category: '購物', title: 'Stellar Place / 大丸百貨購物', time: '14:30-16:30', ticket: '', notes: '與花丸同一區，集中購買伴手禮與服飾。', navQuery: 'Stellar Place 札幌', transportType: 'walk', travelTime: '5 分鐘' },
               { id: '6-4', category: '購物', title: 'Super ARCS Yamahana 超市', time: '17:00-18:00', hours: '至 23:00', ticket: '', notes: `買哈密瓜、鮮奶與最後補貨，回住宿點 (${HOTEL_ADDRESS}) 打包。`, navQuery: 'Super ARCS Yamahana', transportType: 'car', travelTime: '10 分鐘' }
             ]
           },
@@ -644,13 +575,6 @@
           { id: '3', name: '六花亭 奶油葡萄餅乾', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=300' }
         ]);
 
-        const expenseList = ref([
-          { id: '1', category: '飲食', name: '一幻拉麵晚餐', amount: 3200, date: '2026/08/12', paymentMethod: '現金' },
-          { id: '2', category: '交通', name: '新千歲機場租車加油', amount: 4500, date: '2026/08/12', paymentMethod: '信用卡' }
-        ]);
-
-        const totalExpensesJPY = computed(() => expenseList.value.reduce((sum, item) => sum + Number(item.amount), 0));
-
         const showItineraryModal = ref(false);
         const isEditing = ref(false);
         const formItinerary = ref({ id: '', title: '', category: '景點', time: '', ticket: '', notes: '', navQuery: '' });
@@ -659,15 +583,11 @@
         const newShoppingName = ref('');
         const newShoppingImg = ref('');
 
-        const showAddExpenseModal = ref(false);
-        const newExpense = ref({ category: '飲食', name: '', amount: '', paymentMethod: '現金' });
-
         const openGoogleNav = (query) => {
           const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
           window.open(url, '_blank');
         };
 
-        // 莫蘭迪分類標籤配色
         const getCategoryBadge = (cat) => {
           const map = { 
             '景點': 'bg-[#EAE4EC] text-[#5C4B61]', 
@@ -680,14 +600,9 @@
         };
 
         const getTransportIcon = (type) => {
-          if (type === 'walk') return 'fa-solid fa-person-walking text-[#B68D97]';
+          if (type === 'walk') return 'fa-solid fa-[#B68D97]';
           if (type === 'bus') return 'fa-solid fa-bus text-[#C29B72]';
           return 'fa-solid fa-car text-[#8D7B93]';
-        };
-
-        const getExpenseIcon = (cat) => {
-          const map = { '飲食': '🍔', '交通': '🚗', '住宿': '🏨', '門票': '🎟️', '購物': '🛍️' };
-          return map[cat] || '💰';
         };
 
         const openAddModal = () => {
@@ -741,24 +656,6 @@
           shoppingList.value = shoppingList.value.filter(s => s.id !== id);
         };
 
-        const addExpense = () => {
-          if (!newExpense.value.name || !newExpense.value.amount) return;
-          expenseList.value.unshift({
-            id: Date.now().toString(),
-            category: newExpense.value.category,
-            name: newExpense.value.name,
-            amount: newExpense.value.amount,
-            date: new Date().toLocaleDateString('zh-TW'),
-            paymentMethod: newExpense.value.paymentMethod
-          });
-          newExpense.value = { category: '飲食', name: '', amount: '', paymentMethod: '現金' };
-          showAddExpenseModal.value = false;
-        };
-
-        const deleteExpense = (id) => {
-          expenseList.value = expenseList.value.filter(e => e.id !== id);
-        };
-
         const initSortable = () => {
           const el = document.getElementById('itinerary-list');
           if (el) {
@@ -783,11 +680,11 @@
 
         return {
           activeTab, days, currentDayIndex, currentDay, categoryFilter, filteredItinerary,
-          jpyInput, jpyRate, shoppingList, expenseList, totalExpensesJPY,
+          jpyInput, jpyRate, shoppingList,
           showItineraryModal, isEditing, formItinerary, showAddShoppingModal, newShoppingName,
-          showAddExpenseModal, newExpense, openGoogleNav, getCategoryBadge, getTransportIcon,
-          getExpenseIcon, openAddModal, editItinerary, saveItinerary, confirmDeleteItinerary,
-          handleImageUpload, addShoppingItem, deleteShoppingItem, addExpense, deleteExpense
+          openGoogleNav, getCategoryBadge, getTransportIcon,
+          openAddModal, editItinerary, saveItinerary, confirmDeleteItinerary,
+          handleImageUpload, addShoppingItem, deleteShoppingItem
         };
       }
     }).mount('#app');

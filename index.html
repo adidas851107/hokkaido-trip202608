@@ -61,21 +61,17 @@
 
     <!-- 1. 莫蘭迪質感頁首 Banner 區塊 -->
     <header class="relative w-full h-[230px] overflow-hidden bg-stone-300">
-      <!-- 滿版花海橫幅圖片 -->
       <img src="banner.png" alt="Hokkaido Flower Field Banner" class="w-full h-full object-cover object-center saturate-[0.85] contrast-[0.95]" onerror="this.src='https://images.unsplash.com/photo-1590483736622-39da86788790?q=80&w=1920&auto=format&fit=crop'" />
       
-      <!-- 莫蘭迪柔霧遮罩 -->
       <div class="absolute inset-0 bg-gradient-to-t from-[#F5F3F0] via-black/10 to-black/30"></div>
 
-      <!-- 標題文字 overlays -->
       <div class="absolute top-4 left-4 text-white drop-shadow-xs z-10">
         <span class="bg-white/25 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/30">
-          🪻 北海道 • 自駕手冊
+          🪻 北海道 • 親子手冊
         </span>
         <h1 class="text-lg font-extrabold mt-1 tracking-tight">北海道親子 7 天 6 夜慢遊</h1>
       </div>
 
-      <!-- 雙分頁導覽按鈕 (行程 / 資訊) -->
       <nav class="absolute bottom-5 right-3 flex items-center bg-white/90 backdrop-blur-md rounded-full p-1.5 shadow-sm border border-stone-200/80 z-20">
         <button 
           @click="activeTab = 'itinerary'" 
@@ -122,7 +118,7 @@
         </div>
 
         <!-- 當日主題標題與分類篩選 -->
-        <div class="bg-white/90 backdrop-blur-xs p-3.5 rounded-2xl border border-stone-200/70 shadow-2xs space-y-1.5">
+        <div class="bg-white/90 backdrop-blur-xs p-3.5 rounded-2xl border border-stone-200/70 shadow-2xs space-y-2">
           <div class="flex justify-between items-center">
             <div class="text-xs font-bold text-stone-800 flex items-center gap-1.5">
               <i class="fa-solid fa-spa text-[#8D7B93]"></i>
@@ -141,6 +137,14 @@
           <div class="text-xs font-bold text-stone-600 flex items-center gap-1.5">
             <span class="text-[#C29B72]">🌻</span>
             <span>主題：{{ currentDay.theme }}</span>
+          </div>
+
+          <!-- 每日寶寶友善度總評 -->
+          <div class="flex items-center justify-between text-[11px] bg-[#B68D97]/10 px-2.5 py-1.5 rounded-xl border border-[#B68D97]/20">
+            <span class="font-bold text-[#8D7B93] flex items-center gap-1">
+              <i class="fa-solid fa-baby"></i> 今日寶寶友善度指數：
+            </span>
+            <span class="font-extrabold text-stone-800">{{ currentDay.babyScore }}</span>
           </div>
         </div>
 
@@ -161,8 +165,8 @@
 
         <!-- 寶寶 育兒提醒卡片 -->
         <div class="bg-[#B68D97]/15 text-stone-800 text-xs p-3 rounded-2xl border border-[#B68D97]/30 flex items-start gap-2 shadow-2xs">
-          <i class="fa-solid fa-baby text-[#B68D97] mt-0.5 text-sm shrink-0"></i>
-          <div><span class="font-bold text-stone-900">寶寶 貼心提醒：</span>{{ currentDay.babyTip }}</div>
+          <i class="fa-solid fa-heart-pulse text-[#B68D97] mt-0.5 text-sm shrink-0"></i>
+          <div><span class="font-bold text-stone-900">育兒 & 推車防慌指南：</span>{{ currentDay.babyTip }}</div>
         </div>
 
         <!-- 每日出發地點提示卡片 -->
@@ -244,7 +248,6 @@
             <!-- 一般行程卡片 -->
             <div v-else class="bg-white rounded-2xl p-3.5 shadow-2xs border border-stone-200/80 hover:shadow-xs transition-all flex flex-col justify-between">
               <div class="flex items-center justify-between gap-2">
-                <!-- 左側：拖曳圖示 + 橫向單行標籤 + 標題 -->
                 <div class="flex items-center gap-2 min-w-0 flex-1">
                   <span class="cursor-grab text-stone-300 hover:text-stone-500 drag-handle p-1 shrink-0"><i class="fa-solid fa-grip-vertical"></i></span>
                   
@@ -255,7 +258,6 @@
                   <h3 class="font-extrabold text-stone-800 text-sm truncate">{{ item.title }}</h3>
                 </div>
 
-                <!-- 右側：編輯與導航按鈕 -->
                 <div class="flex items-center gap-1 shrink-0">
                   <button @click="editItinerary(item)" class="text-stone-400 hover:text-stone-600 p-1 text-xs"><i class="fa-solid fa-pen"></i></button>
                   <button @click="openGoogleNav(item.navQuery || item.title)" class="bg-[#8D7B93] text-white text-xs px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 shadow-2xs hover:bg-[#6E5D74]">
@@ -265,20 +267,43 @@
               </div>
 
               <!-- 卡片細節欄位 -->
-              <div class="mt-2 text-xs text-stone-500 space-y-1 pl-6">
-                <div v-if="item.time" class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-stone-400 w-3.5"></i> 預計時間：{{ item.time }}</div>
-                <div v-if="item.hours" class="flex items-center gap-1.5"><i class="fa-solid fa-store text-stone-400 w-3.5"></i> 營業時間：{{ item.hours }}</div>
-                <div v-if="item.ticket" class="flex items-center gap-1.5"><i class="fa-solid fa-ticket text-stone-400 w-3.5"></i> 門票/費用：{{ item.ticket }}</div>
+              <div class="mt-2 text-xs text-stone-500 space-y-1.5 pl-6">
+                <div v-if="item.time" class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-stone-400 w-3.5"></i> 時間：{{ item.time }}</div>
+                <div v-if="item.hours" class="flex items-center gap-1.5"><i class="fa-solid fa-store text-stone-400 w-3.5"></i> 營業：{{ item.hours }}</div>
+                <div v-if="item.ticket" class="flex items-center gap-1.5"><i class="fa-solid fa-ticket text-stone-400 w-3.5"></i> 門票/預算：{{ item.ticket }}</div>
                 
                 <!-- Tabelog 評分標籤（美食專用） -->
-                <div v-if="item.rating" class="flex items-center gap-1.5 font-bold text-amber-700">
+                <div v-if="item.rating" class="flex items-center gap-1.5 font-bold text-amber-800">
                   <i class="fa-solid fa-star text-amber-500 w-3.5"></i>
-                  <span>Tabelog 評分：<span class="text-amber-800 font-extrabold">{{ item.rating }}</span></span>
+                  <span>Tabelog 評分：<span class="bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-extrabold text-[11px]">{{ item.rating }}</span></span>
                 </div>
 
-                <div v-if="item.notes" class="flex items-start gap-1.5 text-stone-700 bg-stone-50 p-2 rounded-xl mt-1.5 border border-stone-100">
-                  <i class="fa-regular fa-comment-dots text-[#8D7B93] w-3.5 mt-0.5 shrink-0"></i> <span>{{ item.notes }}</span>
+                <!-- 單點寶寶友善指標 -->
+                <div v-if="item.babyFriendly" class="flex items-center gap-1.5 font-bold text-[#8D7B93] bg-[#8D7B93]/10 px-2 py-1 rounded-lg">
+                  <i class="fa-solid fa-baby-carriage text-[#8D7B93] w-3.5"></i>
+                  <span>推車/育嬰友善：<span class="text-stone-800">{{ item.babyFriendly }}</span></span>
                 </div>
+
+                <!-- 停車與備註說明 -->
+                <div v-if="item.notes" class="flex items-start gap-1.5 text-stone-700 bg-stone-50 p-2 rounded-xl mt-1 border border-stone-100">
+                  <i class="fa-regular fa-comment-dots text-[#8D7B93] w-3.5 mt-0.5 shrink-0"></i> 
+                  <span class="leading-relaxed">{{ item.notes }}</span>
+                </div>
+
+                <!-- 醒目 Plan B 應用區塊 -->
+                <div v-if="item.planB" class="bg-amber-500/10 border border-amber-400/40 p-2.5 rounded-xl text-stone-800 space-y-1 mt-2">
+                  <div class="flex items-center justify-between text-amber-800 font-bold text-[11px]">
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-route text-amber-600"></i> 避開排隊備用方案 (Plan B)</span>
+                    <button @click="openGoogleNav(item.planB.navQuery || item.planB.title)" class="bg-amber-600 text-white text-[10px] px-2 py-0.5 rounded-md font-bold hover:bg-amber-700">導航 Plan B</button>
+                  </div>
+                  <div class="font-extrabold text-xs text-stone-900">{{ item.planB.title }}</div>
+                  <div class="text-[11px] text-amber-900 flex items-center gap-2 font-bold">
+                    <span>★ Tabelog: {{ item.planB.rating }}</span>
+                    <span>• {{ item.planB.babyFriendly }}</span>
+                  </div>
+                  <div class="text-[11px] text-stone-600">{{ item.planB.notes }}</div>
+                </div>
+
               </div>
             </div>
 
@@ -408,6 +433,11 @@
         </div>
 
         <div>
+          <label class="text-[10px] text-stone-400 font-bold block mb-1">寶寶/推車友善說明</label>
+          <input type="text" v-model="formItinerary.babyFriendly" placeholder="🍼 寬敞可推車入內" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200 outline-none">
+        </div>
+
+        <div>
           <label class="text-[10px] text-stone-400 font-bold block mb-1">特色 & 備註</label>
           <textarea v-model="formItinerary.notes" rows="2" class="w-full bg-stone-50 p-2.5 rounded-xl text-xs border border-stone-200 outline-none"></textarea>
         </div>
@@ -443,94 +473,125 @@
           {
             weekDay: 'Wed', dateNum: '12', fullDate: '2026/08/12', theme: '抵達札幌 + 狸小路與便利商店採買',
             startLocation: '新千歲機場 CTS',
+            babyScore: '🍼 4.5 / 5 (機場育嬰室完整，市區停車方便)',
             weather: { region: '札幌', condition: '24-29℃ 日照舒適', temp: '24-29°C', advice: '短袖為主，備薄外套', icon: 'fa-solid fa-sun text-amber-500' },
-            babyTip: '機場先餵奶換尿布，領車後第一段車程盡量讓 寶寶 睡覺。',
+            babyTip: '機場領車前於哺乳室換尿布餵奶。狸小路走道寬敞可推車，但請選擇有電梯之停車場。',
             items: [
-              { id: '1-1', category: '航班', title: '抵達新千歲機場 IT234', time: '11:05', ticket: '', notes: '領行李、換尿布、餵奶；不急著衝櫃檯。', navQuery: 'New Chitose Airport', transportType: 'car', travelTime: '45 分鐘' },
-              { id: '1-2', category: '其他', title: '領車與安裝安全座椅', time: '12:30-13:15', ticket: '', notes: '確認安全帶固定、導航語言與 ETC 卡。', navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '1 小時' },
-              { id: '1-3', category: '購物', title: '狸小路商店街', time: '約 14:30', hours: '各大商店營業中', ticket: '免費', notes: '停車後慢慢逛；買當晚與 寶寶 必需品。', navQuery: '狸小路商店街', transportType: 'car', travelTime: '15 分鐘' },
-              { id: '1-4', category: '購物', title: 'Seicomart 中央店 (便利商店補貨)', time: '約 16:30', hours: '24小時', ticket: '', notes: '回飯店前補貨：熱食炸雞杯、北海道鮮奶與宵夜零食。', navQuery: 'Seicomart 中央店', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '1-5', category: '住宿', title: '辦理入住 La manana 飯店', time: '約 17:00', ticket: '', notes: `入住地點：${HOTEL_ADDRESS}。寶寶 洗澡餵奶，第一天好好休息。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '10 分鐘' }
+              { id: '1-1', category: '航班', title: '抵達新千歲機場 IT234', time: '11:05', ticket: '', notes: '領行李、換尿布、餵奶；機場 2F/3F 有優質育嬰室。', navQuery: 'New Chitose Airport', transportType: 'car', travelTime: '45 分鐘' },
+              { id: '1-2', category: '其他', title: '領車與安裝安全座椅', time: '12:30-13:15', ticket: '', notes: '確認安全帶固定、導航語言與 ETC 卡，寶寶上車前保持舒服狀態。', navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '1 小時', babyFriendly: '🍼 接駁車可放折疊推車' },
+              { id: '1-3', category: '購物', title: '狸小路商店街', time: '約 14:30', hours: '各大商店營業中', ticket: '免費', notes: '🅿️ 建議停於 Times 狸小路週邊立體停車場。拱廊街道平坦極適合推車。', navQuery: '狸小路商店街', transportType: 'car', travelTime: '15 分鐘', babyFriendly: '🛒 全線平坦推車極友善' },
+              { id: '1-4', category: '購物', title: 'Seicomart 中央店 (便利商店補貨)', time: '約 16:30', hours: '24小時', ticketメニュー: '', notes: '買熱食炸雞杯、北海道鮮奶與宵夜。門口平坦好進出。', navQuery: 'Seicomart 中央店', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🛒 門口平坦推車好進出' },
+              { id: '1-5', category: '住宿', title: '辦理入住 La manana 飯店', time: '約 17:00', ticket: '', notes: `入住地點：${HOTEL_ADDRESS}。寶寶 洗澡餵奶，第一天早點休息適應環境。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🍼 附廚房溫奶方便' }
             ]
           },
           {
             weekDay: 'Thu', dateNum: '13', fullDate: '2026/08/13', theme: '場外市場海鮮午餐 + KINOTOYA 甜點 + 大通公園夜景',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+            babyScore: '🍼 4.2 / 5 (場外市場座位寬，甜點店設有內用區)',
             weather: { region: '札幌市區', condition: '24-29℃ 溫和快適', temp: '24-29°C', advice: '大通公園樹陰處活動', icon: 'fa-solid fa-cloud-sun text-amber-500' },
-            babyTip: '下午安排 KINOTOYA 甜點後回飯店休息，確保寶寶充足午睡。電視塔建議 19:00 登塔。',
+            babyTip: '北のグルメ亭空間寬敞，推車可放桌邊。下午一定要回飯店休息 2 小時讓寶寶補眠。',
             items: [
-              { id: '2-1', category: '景點', title: '大通公園散步 (由住宿出發)', time: '09:00 - 10:30', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 12 分鐘。綠地陰影處散步放鬆。`, navQuery: '大通公園', transportType: 'car', travelTime: '12 分鐘' },
-              { id: '2-2', category: '美食', title: '札幌場外市場 - 北のグルメ亭', time: '11:00 - 12:30', hours: '06:00 - 15:00', ticket: '約 ¥2,500 - ¥3,500', rating: '★ 3.58', notes: '特別推薦「北のグルメ亭」的海鮮丼與帝王蟹，提供免費接駁與寬敞座位，相當適合親子用餐。', navQuery: '北のグルメ亭', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '2-3', category: '美食', title: 'KINOTOYA 大通公園店 (下午茶甜點)', time: '15:00 - 16:00', hours: '10:00 - 20:00', ticket: '約 ¥500 - ¥1,200', rating: '★ 3.56', notes: '品嚐熱門極上牛乳霜淇淋與限定歐姆蛋聖代（Omuparfait），設有舒適內用區。', navQuery: 'KINOTOYA 大通公園店', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '2-4', category: '其他', title: '回住宿休息 / 寶寶午睡', time: '16:00 - 18:00', ticket: '', notes: `返回住宿點 (${HOTEL_ADDRESS})，完整保留寶寶午睡、餵奶與大人休息時間。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '10 分鐘' },
-              { id: '2-5', category: '景點', title: '大通公園晚間散步 & 電視塔夜景', time: '18:30 - 20:00', hours: '至 22:00', ticket: '¥1,000', notes: '看亮燈電視塔，登展望台看札幌市區美麗夜景。', navQuery: '札幌電視塔', transportType: 'walk', travelTime: '10 分鐘' },
-              { id: '2-6', category: '住宿', title: '返回住宿地點 La manana', time: '約 20:15', ticket: '', notes: `返抵住宿地點 (${HOTEL_ADDRESS})，安頓 寶寶 休息。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '10 分鐘' }
+              { id: '2-1', category: '景點', title: '大通公園散步 (由住宿出發)', time: '09:00 - 10:30', ticket: '免費', notes: `由住宿點開車 12 分鐘，Park 樹蔭多、草地平坦好推車。`, navQuery: '大通公園', transportType: 'car', travelTime: '12 分鐘', babyFriendly: '🛒 樹蔭草地平坦好推車' },
+              { id: '2-2', category: '美食', title: '札幌場外市場 - 北のグルメ亭', time: '11:00 - 12:30', hours: '06:00 - 15:00', ticket: '約 ¥2,500 - ¥3,500', rating: '★ 3.58', notes: '🅿️ 附設專屬免費停車場。內用空間大，推車可直接推至桌邊，無懼排隊壓力！', navQuery: '北のグルメ亭', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🍼 空間寬敞推車可進桌邊' },
+              { id: '2-3', category: '美食', title: 'KINOTOYA 大通公園店 (下午茶甜點)', time: '15:00 - 16:00', hours: '10:00 - 20:00', ticket: '約 ¥500 - ¥1,200', rating: '★ 3.56', notes: '極上牛乳霜淇淋與歐姆蛋聖代。地下街連通無階梯，內用區寬敞。', navQuery: 'KINOTOYA 大通公園店', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🛒 室內無障礙坡道流暢' },
+              { id: '2-4', category: '其他', title: '回住宿休息 / 寶寶午睡', time: '16:00 - 18:00', ticket: '', notes: `返回住宿點 (${HOTEL_ADDRESS})，完整保留寶寶午睡、餵奶時間，避免過度疲勞。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🍼 充飽電最佳充電站' },
+              { id: '2-5', category: '景點', title: '大通公園晚間散步 & 電視塔夜景', time: '18:30 - 20:00', hours: '至 22:00', ticket: '¥1,000', notes: '電視塔有電梯可搭乘，直達展望台俯瞰夜景。帶薄外套防涼風。', navQuery: '札幌電視塔', transportType: 'walk', travelTime: '10 分鐘', babyFriendly: '🛒 展望台全電梯無障礙' },
+              { id: '2-6', category: '住宿', title: '返回住宿地點 La manana', time: '約 20:15', ticket: '', notes: `返抵住宿地點 (${HOTEL_ADDRESS})。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '10 分鐘' }
             ]
           },
           {
             weekDay: 'Fri', dateNum: '14', fullDate: '2026/08/14', theme: '白色戀人公園 + 小樽運河與 LeTAO 甜點漫遊',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+            babyScore: '🍼 3.8 / 5 (白色戀人極友善；小樽石板路需準備背巾)',
             weather: { region: '小樽沿海', condition: '23-27℃ 海風較明顯', temp: '23-27°C', advice: '攜帶薄襯衫或輕外套', icon: 'fa-solid fa-wind text-slate-400' },
-            babyTip: '小樽石板路較顛簸，建議推車與背巾皆隨身攜帶。',
+            babyTip: '小樽運河與堺町通石板路較顛簸，建議車上備好「嬰兒背巾」，進店或顛簸路段秒切換。',
             items: [
-              { id: '3-1', category: '景點', title: '白色戀人公園 (由住宿出發)', time: '08:30 出發', hours: '10:00-18:00', ticket: '庭園免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發前往。歐式庭園拍照、吃白色戀人霜淇淋。`, navQuery: '白色戀人公園', transportType: 'car', travelTime: '20 分鐘' },
-              { id: '3-2', category: '美食', title: '若雞時代なると本店', time: '12:00-13:00', hours: '11:00 起', ticket: '約 ¥1,500', rating: '★ 3.56', notes: '小樽必吃外酥內嫩半身炸雞與壽司，份量大建議分食。熱門需候位。', navQuery: '若雞時代なると本店', transportType: 'walk', travelTime: '10 分鐘' },
-              { id: '3-3', category: '景點', title: '小樽運河 + 堺町通商店街', time: '13:00-14:30', hours: '依店家', ticket: '免費', notes: '停一次車全程徒步。北一硝子、音樂盒堂散步。', navQuery: '小樽運河', transportType: 'walk', travelTime: '5 分鐘' },
-              { id: '3-4', category: '美食', title: 'LeTAO 本店 (雙層起司蛋糕咖啡廳)', time: '14:30-15:30', hours: '09:00 - 18:00', ticket: '約 ¥1,000 - ¥1,500', rating: '★ 3.59', notes: '2 樓內用咖啡廳享用經典雙層起司蛋糕 (Double Fromage) 與紅茶，頂樓可俯瞰小樽街景。', navQuery: 'LeTAO 本店', transportType: 'walk', travelTime: '5 分鐘' },
-              { id: '3-5', category: '景點', title: '小樽出拔小路散步', time: '16:00-17:00', ticket: '免費', notes: '出拔小路懷舊建築拍照、買在地小吃，準備返程。', navQuery: '小樽出拔小路', transportType: 'walk', travelTime: '5 分鐘' },
-              { id: '3-6', category: '住宿', title: '開車返回住宿地點 La manana', time: '約 18:00', ticket: '', notes: `返抵住宿地點 (${HOTEL_ADDRESS})，寶寶 上車前先換尿布餵奶。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '50 分鐘' }
+              { id: '3-1', category: '景點', title: '白色戀人公園 (由住宿出發)', time: '08:30 出發', hours: '10:00-18:00', ticket: '庭園免費', notes: '🅿️ 附設收費停車場。無障礙設施完善，育嬰室非常乾淨齊全。', navQuery: '白色戀人公園', transportType: 'car', travelTime: '20 分鐘', babyFriendly: '🍼 育嬰室極為完善 (滿分)' },
+              { id: '3-2', category: '美食', title: '若雞時代なると本店', time: '12:00-13:00', hours: '11:00 起', ticket: '約 ¥1,500', rating: '★ 3.56', notes: '小樽半身炸雞名店。熱門時段需候位約 20-30 分，設有榻榻米與塌座，需收推車。', navQuery: '若雞時代なると本店', transportType: 'walk', travelTime: '10 分鐘', babyFriendly: '⚠️ 塌塌米座需收推車改抱寶寶' },
+              { id: '3-3', category: '景點', title: '小樽運河 + 堺町通商店街', time: '13:00-14:30', hours: '依店家', ticket: '免費', notes: '🅿️ 建議停於堺町通中央停車場。石板路較晃，建議後背巾備用。', navQuery: '小樽運河', transportType: 'walk', travelTime: '5 分鐘', babyFriendly: '⚠️ 石板路微晃，建議搭背巾' },
+              { id: '3-4', category: '美食', title: 'LeTAO 本店 (雙層起司蛋糕咖啡廳)', time: '14:30-15:30', hours: '09:00 - 18:00', ticket: '約 ¥1,000 - ¥1,500', rating: '★ 3.59', notes: '2 樓內用咖啡廳享用 Double Fromage。設有電梯直達 2 樓與頂樓，推車無障礙！', navQuery: 'LeTAO 本店', transportType: 'walk', travelTime: '5 分鐘', babyFriendly: '🛒 內設電梯可推車直達 2 樓' },
+              { id: '3-5', category: '景點', title: '小樽出拔小路散步', time: '16:00-17:00', ticket: '免費', notes: '懷舊建築拍攝，巷弄較窄建議用背巾漫步。', navQuery: '小樽出拔小路', transportType: 'walk', travelTime: '5 分鐘', babyFriendly: '⚠️ 巷弄狹窄建議背巾' },
+              { id: '3-6', category: '住宿', title: '開車返回住宿地點 La manana', time: '約 18:00', ticket: '', notes: `返抵住宿地點 (${HOTEL_ADDRESS})，車程 50 分鐘寶寶可在車上補眠。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '50 分鐘' }
             ]
           },
           {
-            weekDay: 'Sat', dateNum: '15', fullDate: '2026/08/15', theme: '富良野花田、Popura甜點與一幻蝦味拉麵',
+            weekDay: 'Sat', dateNum: '15', fullDate: '2026/08/15', theme: '富良野花田、Popura甜點與晚餐彈性方案',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+            babyScore: '🍼 3.5 / 5 (花田步道好推車；市區拉麵改 Plan B 免排隊防慌)',
             weather: { region: '富良野花田', condition: '24-30℃ 花田曝曬強', temp: '24-30°C', advice: '遮陽帽、防曬、透氣長褲', icon: 'fa-solid fa-sun text-amber-500' },
-            babyTip: '長途車程至少停一次休息站。Popura Farm 位於中富良野，距富田農場僅 10 分鐘車程！',
+            babyTip: '一幻拉麵排隊時間較長且空間較狹窄，若遇排隊建議秒切換 Plan B GARAKU 湯咖哩！',
             items: [
-              { id: '4-1', category: '美食', title: 'Furanoya 湯咖哩 (由住宿出發)', time: '08:00 出發', hours: '11:00 起', ticket: '約 ¥1,200', rating: '★ 3.65', notes: `由住宿點 (${HOTEL_ADDRESS}) 開車前往富良野，約 2 小時。富良野在地野菜高湯湯咖哩名店。`, navQuery: 'Furanoya 富良野', transportType: 'car', travelTime: '2 小時' },
-              { id: '4-2', category: '景點', title: '富良野起司工房', time: '12:00-13:00', hours: '09:00-17:00', ticket: '免費', notes: '室內參觀、買起司與牛奶，炎熱時的優質休息點。', navQuery: '富良野起司工房', transportType: 'car', travelTime: '15 分鐘' },
-              { id: '4-3', category: '景點', title: '富田農場 + 富田哈密瓜農場', time: '13:20-15:20', hours: '08:30-17:00', ticket: '免費', notes: '兩處相鄰停一次車：當季花田散步、哈密瓜霜淇淋。', navQuery: '富田農場', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '4-4', category: '美食', title: 'Popura Farm Café', time: '15:30-16:30', hours: '至 17:00', ticket: '約 ¥1,400', rating: '★ 3.48', notes: '距離富田農場僅約 10 分鐘！品嚐 Santa no Hige 鋪滿濃郁霜淇淋的切片哈密瓜。', navQuery: 'Popura Farm Café', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '4-5', category: '美食', title: '蝦味拉麵一幻 總本店', time: '18:30-19:30', hours: '11:00 - 03:00', ticket: '約 ¥1,000', rating: '★ 3.76', notes: '由富良野開車 2 小時返抵札幌，享用甜蝦熬煮極致濃郁的拉麵充飽電！', navQuery: '蝦味拉麵一幻 總本店', transportType: 'car', travelTime: '2 小時' },
-              { id: '4-6', category: '住宿', title: '返回住宿地點 La manana', time: '約 19:45', ticket: '', notes: `享用完拉麵後開車 5 分鐘返抵住宿地點 (${HOTEL_ADDRESS})，讓 寶寶 早點休息。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '5 分鐘' }
+              { id: '4-1', category: '美食', title: 'Furanoya 湯咖哩 (由住宿出發)', time: '08:00 出發', hours: '11:00 起', ticket: '約 ¥1,200', rating: '★ 3.65', notes: '富良野在地野菜高湯名店。🅿️ 門口有停車位，設有一般桌席。', navQuery: 'Furanoya 富良野', transportType: 'car', travelTime: '2 小時', babyFriendly: '🛒 設有桌席推車可放旁邊' },
+              { id: '4-2', category: '景點', title: '富良野起司工房', time: '12:00-13:00', hours: '09:00-17:00', ticket: '免費', notes: '室內冷氣開放、木地板平坦，設有乾淨尿布台與座椅休息區。', navQuery: '富良野起司工房', transportType: 'car', travelTime: '15 分鐘', babyFriendly: '🍼 室內冷氣足、設尿布台' },
+              { id: '4-3', category: '景點', title: '富田農場 + 富田哈密瓜農場', time: '13:20-15:20', hours: '08:30-17:00', ticket: '免費', notes: '🅿️ 停車免費。花田主要步道皆可推車，注意紫外線遮陽。', navQuery: '富田農場', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🛒 主要幹道平坦好推車' },
+              { id: '4-4', category: '美食', title: 'Popura Farm Café', time: '15:30-16:30', hours: '至 17:00', ticket: '約 ¥1,400', rating: '★ 3.48', notes: '距離富田農場 10 分鐘！「Santa no Hige」切片哈密瓜霜淇淋。戶外戶內皆有寬敞座位。', navQuery: 'Popura Farm Café', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🍼 空間大好停車' },
+              { 
+                id: '4-5', category: '美食', title: '蝦味拉麵一幻 總本店 (原訂點)', time: '18:30-19:30', hours: '11:00 - 03:00', ticket: '約 ¥1,000', rating: '★ 3.76', 
+                babyFriendly: '⚠️ 吧檯為主/空間較狹窄/排隊約 45m+',
+                notes: '甜蝦濃郁拉麵。若排隊超過 20 分鐘或寶寶燥動，強烈建議直接執行 Plan B！', 
+                navQuery: '蝦味拉麵一幻 總本店', transportType: 'car', travelTime: '2 小時',
+                planB: {
+                  title: 'Plan B：湯咖哩 GARAKU 札幌本店 / Suage+',
+                  rating: '★ 3.68',
+                  babyFriendly: '🍼 設有寬敞沙發桌席 / 可推車入內',
+                  notes: '札幌極高評價湯咖哩！室內空間相對寬敞舒適，不用在路邊狹窄吧檯抱寶寶排隊，極為友善！',
+                  navQuery: 'Soup Curry GARAKU'
+                }
+              },
+              { id: '4-6', category: '住宿', title: '返回住宿地點 La manana', time: '約 19:45', ticket: '', notes: `返抵住宿地點 (${HOTEL_ADDRESS})，安頓寶寶休息。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '5 分鐘' }
             ]
           },
           {
-            weekDay: 'Sun', dateNum: '16', fullDate: '2026/08/16', theme: '支笏湖放鬆日 + 晚間成吉思汗烤肉',
+            weekDay: 'Sun', dateNum: '16', fullDate: '2026/08/16', theme: '支笏湖放鬆日 + 晚間燒肉備用方案雙保險',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+            babyScore: '🍼 3.9 / 5 (湖畔環境愜意；燒肉避開油煙狹窄選 Plan B)',
             weather: { region: '支笏湖', condition: '21-26℃ 湖邊風較涼', temp: '21-26°C', advice: '必備防風薄外套與寶寶薄毯', icon: 'fa-solid fa-cloud-sun text-slate-400' },
-            babyTip: '湖邊風強，若 寶寶 在睡覺留在岸邊最舒服，不必強求搭船。',
+            babyTip: '達摩本店為圓凳吧檯油煙較大；若擔心寶寶被油煙燻或無處放推車，請直接轉往 Plan B いただきます！',
             items: [
-              { id: '5-1', category: '景點', title: '支笏湖遊客中心 (由住宿出發)', time: '08:30 出發', hours: '09:00-17:30', ticket: '停車費約 ¥1,000', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，約 1 小時 15 分鐘車程。湖岸與溫泉街徒步。`, navQuery: '支笏湖遊客中心', transportType: 'car', travelTime: '1 小時 15 分' },
-              { id: '5-2', category: '美食', title: '食事処 支笏莊 (姬鱒料理)', time: '11:30-12:30', ticket: '約 ¥1,800', rating: '★ 3.25', notes: '品嚐支笏湖特產鮮美姬鱒定食或日式拉麵餐點。', navQuery: '食事処 支笏莊', transportType: 'walk', travelTime: '5 分鐘' },
-              { id: '5-3', category: '景點', title: '湖畔咖啡館休息 / 15:00 返札幌', time: '12:30-15:00', ticket: '', notes: '不趕景點，讓 寶寶 舒適午睡；15:00 避開山路晚高峰返札幌。', navQuery: '支笏湖', transportType: 'car', travelTime: '1 小時' },
-              { id: '5-4', category: '美食', title: '成吉思汗達摩 本店 (烤羊肉晚餐)', time: '17:30-19:00', hours: '17:00 起', ticket: '約 ¥3,000', rating: '★ 3.70', notes: '札幌代表性成吉思汗燒肉名店！若嫌煙味過重，可選擇空間較寬敞之分店。', navQuery: '成吉思汗 達摩 本店', transportType: 'car', travelTime: '15 分鐘' },
-              { id: '5-5', category: '住宿', title: '返回住宿地點 La manana', time: '約 19:25', ticket: '', notes: `燒肉晚餐後返抵住宿地點 (${HOTEL_ADDRESS})，整理裝備準備明日採買。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '15 分鐘' }
+              { id: '5-1', category: '景點', title: '支笏湖遊客中心 (由住宿出發)', time: '08:30 出發', hours: '09:00-17:30', ticket: '停車費約 ¥1,000', notes: '🅿️ 湖畔大型停車場。館內有冷氣與無障礙廁所/哺集乳室。', navQuery: '支笏湖遊客中心', transportType: 'car', travelTime: '1 小時 15 分', babyFriendly: '🍼 遊客中心有優質育嬰設備' },
+              { id: '5-2', category: '美食', title: '食事処 支笏莊 (姬鱒料理)', time: '11:30-12:30', ticket: '約 ¥1,800', rating: '★ 3.25', notes: '支笏湖特產姬鱒定食。內有一般桌席，空間舒適。', navQuery: '食事処 支笏莊', transportType: 'walk', travelTime: '5 分鐘', babyFriendly: '🛒 桌席可放推車' },
+              { id: '5-3', category: '景點', title: '湖畔咖啡館休息 / 15:00 返札幌', time: '12:30-15:00', ticket: '', notes: '不趕行程，讓寶寶在湖邊涼爽處午睡。', navQuery: '支笏湖', transportType: 'car', travelTime: '1 小時', babyFriendly: '🛒 湖畔推車散步極放鬆' },
+              { 
+                id: '5-4', category: '美食', title: '成吉思汗達摩 本店 (原訂點)', time: '17:30-19:00', hours: '17:00 起', ticket: '約 ¥3,000', rating: '★ 3.70', 
+                babyFriendly: '⚠️ 圓凳吧檯/油煙較重/無推車空間',
+                notes: '札幌燒肉代表。因吧檯狹窄且排隊時間長，強烈建議考慮 Plan B！', 
+                navQuery: '成吉思汗 達摩 本店', transportType: 'car', travelTime: '15 分鐘',
+                planB: {
+                  title: 'Plan B：いただきます (Itadakimasu)',
+                  rating: '★ 3.68',
+                  babyFriendly: '🍼 設有一般桌席 / 通風較佳 / 排隊動線寬敞',
+                  notes: '使用北海道自產稀有純種綿羊肉！店內環境相對寬敞通風，對帶寶寶與推車的家庭友善許多。',
+                  navQuery: 'いただきます 北海道産羊肉専門店'
+                }
+              },
+              { id: '5-5', category: '住宿', title: '返回住宿地點 La manana', time: '約 19:25', ticket: '', notes: `返抵住宿地點 (${HOTEL_ADDRESS})。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '15 分鐘' }
             ]
           },
           {
-            weekDay: 'Mon', dateNum: '17', fullDate: '2026/08/17', theme: '札幌購物日 (Ario & 根室花丸)',
+            weekDay: 'Mon', dateNum: '17', fullDate: '2026/08/17', theme: '札幌購物日 (Ario育嬰神殿 & 根室花丸)',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+            babyScore: '🍼 4.9 / 5 (購物中心育嬰設備最完整，補貨無壓力)',
             weather: { region: '札幌市區', condition: '24-28℃ 室內空調穩定', temp: '24-28°C', advice: '商場育嬰設施最齊全', icon: 'fa-solid fa-bag-shopping text-stone-400' },
-            babyTip: '今日育嬰設備最完整，方便安排規律餵奶與午睡。',
+            babyTip: 'Ario 札幌阿卡將百貨有五星級哺乳室與副食品採購區。根室花丸先抽號碼牌後逛街，完全不手忙腳亂。',
             items: [
-              { id: '6-1', category: '購物', title: 'Ario 札幌購物中心 (由住宿出發)', time: '09:45 出發', hours: '10:00 起', ticket: '免費', notes: `由住宿點 (${HOTEL_ADDRESS}) 出發，車程約 15 分鐘。採購阿卡將育嬰用品。`, navQuery: 'Ario 札幌', transportType: 'car', travelTime: '15 分鐘' },
-              { id: '6-2', category: '美食', title: '根室花丸 JR Tower 店', time: '13:00-14:30', hours: '11:00 起', ticket: '依盤計費', rating: '★ 3.68', notes: '北海道極高評價迴轉壽司！先抽號碼牌後逛商場等候。必點花咲蟹鐵砲汁、鮭魚卵。', navQuery: '根室花丸 JR Tower Stellar Place', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '6-3', category: '購物', title: 'Stellar Place / 大丸百貨購物', time: '14:30-16:30', ticket: '', notes: '與花丸同一區，集中購買伴手禮與服飾。', navQuery: 'Stellar Place 札幌', transportType: 'walk', travelTime: '5 分鐘' },
-              { id: '6-4', category: '購物', title: 'Super ARCS Yamahana 超市', time: '17:00-18:00', hours: '至 23:00', ticket: '', notes: '採買北海道鮮奶、哈密瓜、零食與最後補貨。', navQuery: 'Super ARCS Yamahana', transportType: 'car', travelTime: '10 分鐘' },
-              { id: '6-5', category: '住宿', title: '返回住宿地點 La manana', time: '約 18:10', ticket: '', notes: `返抵住宿地點 (${HOTEL_ADDRESS})，整理戰利品與打包行李準備明日退房。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '5 分鐘' }
+              { id: '6-1', category: '購物', title: 'Ario 札幌購物中心 (阿卡將育嬰)', time: '09:45 出發', hours: '10:00 起', ticket: '免費', notes: '🅿️ 停車免費且位子極多。阿卡將百貨買齊寶寶用品，設有超棒育嬰室。', navQuery: 'Ario 札幌', transportType: 'car', travelTime: '15 分鐘', babyFriendly: '🍼 育嬰設施 5 星級頂規' },
+              { id: '6-2', category: '美食', title: '根室花丸 JR Tower 店', time: '13:00-14:30', hours: '11:00 起', ticket: '依盤計費', rating: '★ 3.68', notes: '極高評價迴轉壽司！11:00 前先去抽取號碼牌，接著安心逛街，時間到了再回店入座。', navQuery: '根室花丸 JR Tower Stellar Place', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🍼 寬敞桌席/可推車/無須死守現場' },
+              { id: '6-3', category: '購物', title: 'Stellar Place / 大丸百貨購物', time: '14:30-16:30', ticket: '', notes: '大丸百貨 7F 育嬰室設施極佳，補齊伴手禮與服飾。', navQuery: 'Stellar Place 札幌', transportType: 'walk', travelTime: '5 分鐘', babyFriendly: '🛒 電梯與育嬰室齊備' },
+              { id: '6-4', category: '購物', title: 'Super ARCS Yamahana 超市', time: '17:00-18:00', hours: '至 23:00', ticket: '', notes: '採買北海道鮮奶、哈密瓜與最後補貨。', navQuery: 'Super ARCS Yamahana', transportType: 'car', travelTime: '10 分鐘', babyFriendly: '🛒 車道推車極寬敞' },
+              { id: '6-5', category: '住宿', title: '返回住宿地點 La manana', time: '約 18:10', ticket: '', notes: `返抵住宿地點 (${HOTEL_ADDRESS})，整理行李。`, navQuery: HOTEL_ADDRESS, transportType: 'car', travelTime: '5 分鐘' }
             ]
           },
           {
             weekDay: 'Tue', dateNum: '18', fullDate: '2026/08/18', theme: '新千歲機場巡禮 + 返台',
             startLocation: `住宿地點 (${HOTEL_ADDRESS})`,
+            babyScore: '🍼 4.8 / 5 (新千歲機場為親子友善天堂)',
             weather: { region: '新千歲機場', condition: '室內冷氣舒適', temp: '24°C', advice: '注意室內外溫差分層穿脫', icon: 'fa-solid fa-plane-departure text-stone-500' },
-            babyTip: '飛機起飛時餵奶或讓 寶寶 吸奶嘴協助吞嚥，可減少耳壓不適。',
+            babyTip: '機場國內線 2F/3F 育嬰室極多且附熱水器。登機起飛時餵奶可降低寶寶耳壓不適。',
             items: [
-              { id: '7-1', category: '其他', title: '退房整理 & 出發前往加油還車', time: '11:30 出發', ticket: '', notes: `由住宿點 (${HOTEL_ADDRESS}) 退房出發前往加油站，12:45-13:30 還車搭接駁車至機場。`, navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '50 分鐘' },
-              { id: '7-2', category: '美食', title: '機場北海道拉麵道場 & 伴手禮區', time: '13:30-16:00', ticket: '', rating: '★ 3.58', notes: '匯集白樺山莊、一幻拉麵、Kinotoya 起司塔、Royce、LeTAO 等在地頂級美食。', navQuery: '新千歲機場 國內線航廈', transportType: 'walk', travelTime: '10 分鐘' },
-              { id: '7-3', category: '景點', title: '機場親子設施與咖啡休息', time: '16:00-17:00', ticket: '', notes: 'Royce Chocolate World, Doraemon Sky Park 散步。', navQuery: 'Royce Chocolate World', transportType: 'walk', travelTime: '10 分鐘' },
-              { id: '7-4', category: '航班', title: '辦理登機 TR893 返台', time: '17:00-19:10', ticket: '', notes: '安檢前完成換尿布餵奶。19:10 起飛返台。', navQuery: '新千歲機場 國際線航廈', transportType: '', travelTime: '' }
+              { id: '7-1', category: '其他', title: '退房整理 & 出發前往加油還車', time: '11:30 出發', ticket: '', notes: `由住宿點 (${HOTEL_ADDRESS}) 退房，還車前加油，搭接駁車至機場。`, navQuery: 'ORIX Rent-a-Car New Chitose Airport', transportType: 'car', travelTime: '50 分鐘' },
+              { id: '7-2', category: '美食', title: '機場北海道拉麵道場 & 伴手禮區', time: '13:30-16:00', ticket: '', rating: '★ 3.58', notes: '匯集一幻、白樺山莊、Kinotoya、Royce 等名店。設有親子桌席區與專屬推車道。', navQuery: '新千歲機場 國內線航廈', transportType: 'walk', travelTime: '10 分鐘', babyFriendly: '🍼 全區無障礙推車順暢' },
+              { id: '7-3', category: '景點', title: '機場親子設施與咖啡休息', time: '16:00-17:00', ticket: '', notes: 'Royce Chocolate World、哆啦A夢區散步，出境前徹底放電。', navQuery: 'Royce Chocolate World', transportType: 'walk', travelTime: '10 分鐘', babyFriendly: '🛒 步道寬廣放電首選' },
+              { id: '7-4', category: '航班', title: '辦理登機 TR893 返台', time: '17:00-19:10', ticket: '', notes: '安檢前完成尿布更換與餵奶。19:10 起飛返台。', navQuery: '新千歲機場 國際線航廈', transportType: '', travelTime: '', babyFriendly: '🍼 哺乳室熱水齊備' }
             ]
           }
         ]);
@@ -543,7 +604,7 @@
 
         const showItineraryModal = ref(false);
         const isEditing = ref(false);
-        const formItinerary = ref({ id: '', title: '', category: '景點', time: '', ticket: '', rating: '', notes: '', navQuery: '' });
+        const formItinerary = ref({ id: '', title: '', category: '景點', time: '', ticket: '', rating: '', babyFriendly: '', notes: '', navQuery: '' });
 
         const openGoogleNav = (query) => {
           const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
@@ -562,14 +623,14 @@
         };
 
         const getTransportIcon = (type) => {
-          if (type === 'walk') return 'fa-solid fa-[#B68D97]';
+          if (type === 'walk') return 'fa-solid fa-person-walking text-[#B68D97]';
           if (type === 'bus') return 'fa-solid fa-bus text-[#C29B72]';
           return 'fa-solid fa-car text-[#8D7B93]';
         };
 
         const openAddModal = () => {
           isEditing.value = false;
-          formItinerary.value = { id: Date.now().toString(), title: '', category: '景點', time: '', ticket: '', rating: '', notes: '', navQuery: '' };
+          formItinerary.value = { id: Date.now().toString(), title: '', category: '景點', time: '', ticket: '', rating: '', babyFriendly: '', notes: '', navQuery: '' };
           showItineraryModal.value = true;
         };
 
